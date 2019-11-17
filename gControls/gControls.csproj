@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{31976232-8750-4BCF-BD81-B0C06477E968}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>gpower2.gControls</RootNamespace>
+    <AssemblyName>gpower2.gControls</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\..\Libs\EPPlus\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClipboardExtension.cs" />
+    <Compile Include="ControlExtensions.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
+    <Compile Include="gComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gDataGridViewFooter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gDataGridViewFooter.Designer.cs">
+      <DependentUpon>gDataGridViewFooter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gInputForm.Designer.cs">
+      <DependentUpon>gInputForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gNumericUpDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gNumericUpDown.Designer.cs">
+      <DependentUpon>gNumericUpDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gNumPad.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gNumPad.Designer.cs">
+      <DependentUpon>gNumPad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ISmartControlSearchable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="gSmartTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gSmartTextBox.Designer.cs">
+      <DependentUpon>gSmartTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gExcelHelper.cs" />
+    <Compile Include="SortableBindingList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gComboBox.resx">
+      <DependentUpon>gComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gDataGridView.resx">
+      <DependentUpon>gDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gDataGridViewFooter.resx">
+      <DependentUpon>gDataGridViewFooter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gForm.resx">
+      <DependentUpon>gForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gInputForm.resx">
+      <DependentUpon>gInputForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gNumericUpDown.resx">
+      <DependentUpon>gNumericUpDown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gNumPad.resx">
+      <DependentUpon>gNumPad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gPropertyForm.resx">
+      <DependentUpon>gPropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gTextBox.resx">
+      <DependentUpon>gTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gSmartTextBox.resx">
+      <DependentUpon>gSmartTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gTreeView.resx">
+      <DependentUpon>gTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
