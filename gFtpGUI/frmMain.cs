@@ -986,6 +986,17 @@ namespace gFtpGUI
                     throw new Exception("The ftp password cannot be empty!");
                 }
 
+                if (
+                    (cmbFtpConnections.DataSource as IList<FtpConnection>)
+                    .Any(f => 
+                        f.Server.ToLower().Trim().Equals(txtFtpServer.Text.ToLower().Trim())
+                        && f.Username.ToLower().Trim().Equals(txtUsername.Text.ToLower().Trim())
+                    )
+                )
+                {
+                    throw new Exception("The FTP connection already exists!");
+                }
+
                 FtpConnection newCon = new FtpConnection();
                 newCon.Server = txtFtpServer.Text.Trim();
                 newCon.Username = txtUsername.Text.Trim();
