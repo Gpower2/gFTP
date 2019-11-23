@@ -594,7 +594,7 @@ namespace gFtpGUI
             QueueItem q = grdQueue.SelectedItem as QueueItem;
             if (File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
             {
-                Process.Start(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename));
+                Task.Run(() => Process.Start(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)));
             }
         }
 
