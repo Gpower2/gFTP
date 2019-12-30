@@ -114,12 +114,18 @@ namespace gFtpGUI
             {
                 ClearFtpFolder();
 
+                grpFtpServer.Enabled = false;
+                grpFtpServer.Cursor = Cursors.WaitCursor;
+
                 grpFtpFiles.Enabled = false;
                 grpFtpFiles.Cursor = Cursors.WaitCursor;
 
                 ftp = new gFTP(txtFtpServer.Text, txtUsername.Text, txtPassword.Text);
                 FtpFolder f = await ftp.GetFtpFolderDetailsAsync("", 0);
                 FillFtpDirectoryTree(f);
+
+                grpFtpServer.Enabled = true;
+                grpFtpServer.Cursor = Cursors.Default;
 
                 grpFtpFiles.Enabled = true;
                 grpFtpFiles.Cursor = Cursors.Default;
@@ -128,9 +134,12 @@ namespace gFtpGUI
             {
                 Debug.WriteLine(ex);
 
+                grpFtpServer.Cursor = Cursors.Default; 
                 grpFtpFiles.Cursor = Cursors.Default;
+                
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                grpFtpServer.Enabled = true;
                 grpFtpFiles.Enabled = true;
             }
         }

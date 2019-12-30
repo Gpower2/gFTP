@@ -76,6 +76,8 @@ namespace gFtp
 
             using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
             {
+                Debug.WriteLine($"Delete command Complete, status: '{response.StatusDescription}'");
+                
                 if (!response.StatusDescription.StartsWith("250"))
                 {
                     throw new Exception(response.StatusDescription);
@@ -92,12 +94,13 @@ namespace gFtp
             String contents = "";
             using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
             {
+                Debug.WriteLine($"Directory {argPath} List Complete, status: '{response.StatusDescription}'");
+
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
                     contents = await reader.ReadToEndAsync();
 
                     Debug.WriteLine(contents);
-                    Debug.WriteLine(String.Format("Directory {0} List Complete, status {1}", argPath, response.StatusDescription));
                 }
             }
 
