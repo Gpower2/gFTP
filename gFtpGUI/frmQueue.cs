@@ -632,10 +632,12 @@ namespace gFtpGUI
         {
             try
             {
-                while ((grdQueue.DataSource as IList<QueueItem>).Any(q => !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
+                var queue = (grdQueue.DataSource as IList<QueueItem>);
+
+                while (queue.Any(q => q.State == JobState.Completed && !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
                 {
-                    (grdQueue.DataSource as IList<QueueItem>).Remove(
-                        (grdQueue.DataSource as IList<QueueItem>).FirstOrDefault(q => !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
+                    queue.Remove(
+                        queue.FirstOrDefault(q => q.State == JobState.Completed && !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
                     );
                 }
                 grdQueue.Refresh();
