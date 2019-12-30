@@ -410,6 +410,7 @@ namespace gFtpGUI
                     }
 
                     grdLocalFiles.DataSource = items;
+
                     // Set the sortedColumn and order again
                     if (sortColumn != null)
                     {
@@ -427,8 +428,20 @@ namespace gFtpGUI
                             }
                         }
                     }
-                    grdLocalFiles.SetSelectedRowByIndex(oldSelection);
+
+                    if (oldVerticalOffset > grdLocalFiles.Rows.Count - 1)
+                    {
+                        oldVerticalOffset = grdLocalFiles.Rows.Count - 1;
+                    }
                     grdLocalFiles.FirstDisplayedScrollingRowIndex = oldVerticalOffset;
+
+                    if (oldSelection > grdLocalFiles.Rows.Count - 1)
+                    {
+                        oldSelection = grdLocalFiles.Rows.Count - 1;
+                    }
+                    grdLocalFiles.SetSelectedRowByIndex(oldSelection, false);
+
+                    grdLocalFiles.PerformLayout();
                 }
             }
             catch (Exception ex)
