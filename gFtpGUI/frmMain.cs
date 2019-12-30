@@ -1036,6 +1036,16 @@ namespace gFtpGUI
                     return;
                 }
 
+                // First ask the user
+                if (MessageBox.Show(
+                    "Do you really want to delete the selected Ftp Connection?", 
+                    "Are you sure?", 
+                    MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+
                 // Get the selected index
                 int prevSelectionIndex = cmbFtpConnections.SelectedIndex;
 
