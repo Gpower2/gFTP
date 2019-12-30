@@ -79,7 +79,22 @@ namespace gFtpGUI
             foreach (Job job in argJobs)
             {
                 QueueItem q = new gFtpGUI.QueueItem();
-                if (!(grdQueue.DataSource as IList<QueueItem>).Any())
+                var queue = (grdQueue.DataSource as IList<QueueItem>);
+
+                // Check if the job is already added to the queue
+                if (queue.Any(i => 
+                        i.Job.FtpFilename.ToLower().Equals(job.FtpFilename.ToLower())
+                        && i.Job.FtpPath.ToLower().Equals(job.FtpPath.ToLower())
+                        && i.Job.LocalFilename.ToLower().Equals(job.LocalFilename.ToLower())
+                        && i.Job.LocalPath.ToLower().Equals(job.LocalPath.ToLower())
+                    )
+                )
+                {
+                    MessageBox.Show($"The job {job} is already added to the queue!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    continue;
+                }
+
+                if (!queue.Any())
                 {
                     q.Order = 1;
                 }
@@ -91,7 +106,7 @@ namespace gFtpGUI
                 q.Size = job.Size;
                 q.State = JobState.Pending;
 
-                (grdQueue.DataSource as IList<QueueItem>).Add(q);
+                queue.Add(q);
             }
             grdQueue.ClearSelection();
             grdQueue.ResumeLayout();            
@@ -103,7 +118,22 @@ namespace gFtpGUI
         public async Task AddJobAsync(Job argJob)
         {
             QueueItem q = new gFtpGUI.QueueItem();
-            if(!(grdQueue.DataSource as IList<QueueItem>).Any())
+            var queue = (grdQueue.DataSource as IList<QueueItem>);
+
+            // Check if the job is already added to the queue
+            if (queue.Any(i =>
+                    i.Job.FtpFilename.ToLower().Equals(argJob.FtpFilename.ToLower())
+                    && i.Job.FtpPath.ToLower().Equals(argJob.FtpPath.ToLower())
+                    && i.Job.LocalFilename.ToLower().Equals(argJob.LocalFilename.ToLower())
+                    && i.Job.LocalPath.ToLower().Equals(argJob.LocalPath.ToLower())
+                )
+            )
+            {
+                MessageBox.Show($"The job {argJob} is already added to the queue!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!queue.Any())
             {
                 q.Order = 1;
             }
@@ -115,7 +145,7 @@ namespace gFtpGUI
             q.Size = argJob.Size;
             q.State = JobState.Pending;
 
-            (grdQueue.DataSource as IList<QueueItem>).Add(q);
+            queue.Add(q);
             grdQueue.ClearSelection();
             grdQueue.Refresh();
 
