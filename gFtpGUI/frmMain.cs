@@ -43,6 +43,8 @@ namespace gFtpGUI
             InitLocalDrives();
             InitFtpConnections();
             InitSettings();
+
+            grdFtpFiles.MultiSelect = true;
         }
 
         private void frmMain_Shown(object sender, EventArgs e)
