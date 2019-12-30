@@ -62,6 +62,27 @@ namespace gFtp
             return request;
         }
 
+        public async Task DeleteRemoteFile(string argFile)
+        {
+            argFile = argFile.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFile));
+            NetworkCredential credentials = new NetworkCredential(FtpUsername, FtpPassword);
+            request.Credentials = credentials;
+            request.UsePassive = true;
+            request.UseBinary = true;
+            request.KeepAlive = false;
+
+            request.Method = WebRequestMethods.Ftp.DeleteFile;
+
+            using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
+            {
+                if (!response.StatusDescription.StartsWith("250"))
+                {
+                    throw new Exception(response.StatusDescription);
+                }                
+            }
+        }
+
         public async Task<FtpFolder> GetFtpFolderDetailsAsync(String argPath, Int32 argLevel)
         {
             // Get the object used to communicate with the server.

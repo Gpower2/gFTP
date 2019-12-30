@@ -259,6 +259,9 @@ namespace gFtpGUI
                 grdFtpFiles.DataSource = items;
 
                 grpFtpFiles.Enabled = true;
+
+                grpFtpFiles.PerformLayout();
+
                 grpFtpFiles.Cursor = Cursors.Default;
             }
             catch (Exception ex)
@@ -653,6 +656,49 @@ namespace gFtpGUI
             }
         }
 
+        private async void btnDeleteRemoteFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (grdFtpFiles.SelectedIndex == -1)
+                {
+                    throw new Exception("No Ftp File selected!");
+                }
+
+                // Ask for confirmation from user
+                if (MessageBox.Show(
+                    "Are you sure you want to delete remote files?", 
+                    "Are you sure?", 
+                    MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+
+                foreach (FileItem f in grdFtpFiles.SelectedItems)
+                {
+                    if (f.Type != "Directory")
+                    {
+                        await ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                // Refresh the ftp grid
+                btnRefreshFtpPath_Click(null, null);
+
+                MessageBox.Show($"The remote file(s) was deleted successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private async void DownloadFtpFolder(FtpFolder argFolder, String argLocalRoot)
         {
             // Make all the necessary local folders
@@ -674,7 +720,7 @@ namespace gFtpGUI
                 j.Ftp = ftp;
 
                 jobs.Add(j);
-                //_FrmQueue.AddJob(j);
+
                  Application.DoEvents();
             }
             await _FrmQueue.AddJobsAsync(jobs);
@@ -841,6 +887,7 @@ namespace gFtpGUI
                 DataGridViewColumn sortColumn = grdFtpFiles.SortedColumn;
                 SortOrder sortOrder = grdFtpFiles.SortOrder;
                 int oldVerticalOffset = grdFtpFiles.FirstDisplayedScrollingRowIndex;
+                int oldSelectedIndex = grdFtpFiles.SelectedIndex;
                 // First clear the list view contents
                 grdFtpFiles.DataSource = null;
 
@@ -923,14 +970,26 @@ namespace gFtpGUI
                 }
                 
                 // Check if Vertical Offset is now valid
-                if (grdFtpFiles.Rows.Count < oldVerticalOffset - 1)
+                if (oldVerticalOffset > grdFtpFiles.Rows.Count - 1)
                 {
                     oldVerticalOffset = grdFtpFiles.Rows.Count - 1;
-                }
+                }                
 
                 grdFtpFiles.FirstDisplayedScrollingRowIndex = oldVerticalOffset;
 
+
+                // Check if selected index is now valid
+                if (oldSelectedIndex > grdFtpFiles.Rows.Count - 1)
+                {
+                    oldSelectedIndex = grdFtpFiles.Rows.Count - 1;
+                }
+
+                grdFtpFiles.SetSelectedRowByIndex(oldSelectedIndex, false);
+
                 grpFtpFiles.Enabled = true;
+
+                grdFtpFiles.PerformLayout();
+
                 grpFtpFiles.Cursor = Cursors.Default;
             }
             catch (Exception ex)
@@ -1023,7 +1082,6 @@ namespace gFtpGUI
                 Debug.WriteLine(ex);
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private void btnDeleteFtpConnection_Click(object sender, EventArgs e)
@@ -1112,6 +1170,5 @@ namespace gFtpGUI
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
     }
 }

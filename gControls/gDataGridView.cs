@@ -449,7 +449,7 @@ namespace gpower2.gControls
             }
         }
 
-        public void SetSelectedRowByIndex(Int32 idx)
+        public void SetSelectedRowByIndex(Int32 idx, bool autoScrollToRow = true)
         {
             // check if DataGridView contains any rows
             if (this.Rows.Count == 0)
@@ -473,10 +473,15 @@ namespace gpower2.gControls
             }
 
             this.Rows[idx].Selected = true;
-            // Try to find the first visible cell
-            Int32 firsVisibleCellIndex = this.Rows[idx].Cells.Cast<DataGridViewCell>().Where(c => c.Visible).FirstOrDefault()?.ColumnIndex ?? 0;
-            this.CurrentCell = this.Rows[idx]?.Cells[firsVisibleCellIndex];
-            this.FirstDisplayedScrollingRowIndex = idx;
+
+            if (autoScrollToRow)
+            {
+                // Try to find the first visible cell
+                Int32 firsVisibleCellIndex = this.Rows[idx].Cells.Cast<DataGridViewCell>().Where(c => c.Visible).FirstOrDefault()?.ColumnIndex ?? 0;
+                this.CurrentCell = this.Rows[idx]?.Cells[firsVisibleCellIndex];
+                this.FirstDisplayedScrollingRowIndex = idx;
+            }
+
             this.PerformLayout();
         }
 

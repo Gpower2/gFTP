@@ -77,6 +77,7 @@
             this.lblAria = new System.Windows.Forms.Label();
             this.txtAria = new System.Windows.Forms.TextBox();
             this.btnDeleteFtpConnection = new System.Windows.Forms.Button();
+            this.btnDeleteRemoteFile = new System.Windows.Forms.Button();
             this.grpFtpFiles.SuspendLayout();
             this.tlpFtpContents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spltFtp)).BeginInit();
@@ -527,7 +528,7 @@
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(15, 19);
+            this.btnDownload.Location = new System.Drawing.Point(6, 19);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(124, 29);
             this.btnDownload.TabIndex = 14;
@@ -619,6 +620,7 @@
             // 
             // grpActions
             // 
+            this.grpActions.Controls.Add(this.btnDeleteRemoteFile);
             this.grpActions.Controls.Add(this.btnJobs);
             this.grpActions.Controls.Add(this.btnSaveAriaPath);
             this.grpActions.Controls.Add(this.btnBrowseAria);
@@ -635,7 +637,7 @@
             // 
             // btnJobs
             // 
-            this.btnJobs.Location = new System.Drawing.Point(145, 19);
+            this.btnJobs.Location = new System.Drawing.Point(134, 19);
             this.btnJobs.Name = "btnJobs";
             this.btnJobs.Size = new System.Drawing.Size(66, 29);
             this.btnJobs.TabIndex = 19;
@@ -668,7 +670,7 @@
             // lblAria
             // 
             this.lblAria.AutoSize = true;
-            this.lblAria.Location = new System.Drawing.Point(217, 26);
+            this.lblAria.Location = new System.Drawing.Point(294, 26);
             this.lblAria.Name = "lblAria";
             this.lblAria.Size = new System.Drawing.Size(61, 15);
             this.lblAria.TabIndex = 16;
@@ -680,10 +682,10 @@
             this.txtAria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAria.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAria.Location = new System.Drawing.Point(284, 22);
+            this.txtAria.Location = new System.Drawing.Point(360, 22);
             this.txtAria.Name = "txtAria";
             this.txtAria.ReadOnly = true;
-            this.txtAria.Size = new System.Drawing.Size(792, 23);
+            this.txtAria.Size = new System.Drawing.Size(716, 23);
             this.txtAria.TabIndex = 15;
             this.txtAria.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtAria_DragDrop);
             this.txtAria.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtAria_DragEnter);
@@ -698,6 +700,16 @@
             this.btnDeleteFtpConnection.Text = "Delete";
             this.btnDeleteFtpConnection.UseVisualStyleBackColor = true;
             this.btnDeleteFtpConnection.Click += new System.EventHandler(this.btnDeleteFtpConnection_Click);
+            // 
+            // btnDeleteRemoteFile
+            // 
+            this.btnDeleteRemoteFile.Location = new System.Drawing.Point(212, 19);
+            this.btnDeleteRemoteFile.Name = "btnDeleteRemoteFile";
+            this.btnDeleteRemoteFile.Size = new System.Drawing.Size(76, 29);
+            this.btnDeleteRemoteFile.TabIndex = 20;
+            this.btnDeleteRemoteFile.Text = "Delete";
+            this.btnDeleteRemoteFile.UseVisualStyleBackColor = true;
+            this.btnDeleteRemoteFile.Click += new System.EventHandler(this.btnDeleteRemoteFile_Click);
             // 
             // frmMain
             // 
@@ -790,6 +802,7 @@
         private System.Windows.Forms.Button btnSaveAriaPath;
         private System.Windows.Forms.Button btnJobs;
         private System.Windows.Forms.Button btnDeleteFtpConnection;
+        private System.Windows.Forms.Button btnDeleteRemoteFile;
     }
 }
 
