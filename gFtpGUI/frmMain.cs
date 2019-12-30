@@ -1026,6 +1026,54 @@ namespace gFtpGUI
 
         }
 
+        private void btnDeleteFtpConnection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Check if an FtpConnections was selected
+                if (cmbFtpConnections.SelectedIndex == -1)
+                {
+                    return;
+                }
+
+                // Get the selected index
+                int prevSelectionIndex = cmbFtpConnections.SelectedIndex;
+
+                // Get the items as list
+                List<FtpConnection> connectionsList = cmbFtpConnections.DataSource as List<FtpConnection>;
+
+                // Remove the selected FtpConnection from the list
+                connectionsList.Remove(cmbFtpConnections.SelectedItem as FtpConnection);
+
+                // Update the file with the ftp connections
+                String filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "connections.xml");
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<FtpConnection>));
+                using (FileStream fs = new FileStream(filename, FileMode.Create))
+                {
+                    serializer.Serialize(fs, connectionsList);
+                }
+
+                // Read the ftp connections from the file
+                InitFtpConnections();
+
+                // Check if the previous selected index is now valid
+                if (prevSelectionIndex > cmbFtpConnections.Items.Count - 1)
+                {
+                    prevSelectionIndex = cmbFtpConnections.Items.Count - 1;
+                }
+
+                cmbFtpConnections.SelectedIndex = prevSelectionIndex;
+
+                MessageBox.Show("The connection was deleted!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnSaveAriaPath_Click(object sender, EventArgs e)
         {
             try
@@ -1054,5 +1102,6 @@ namespace gFtpGUI
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }
