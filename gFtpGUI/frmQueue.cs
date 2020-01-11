@@ -76,7 +76,7 @@ namespace gFtpGUI
         public async Task AddJobsAsync(IList<Job> argJobs)
         {
             grdQueue.SuspendLayout();
-            foreach (Job job in argJobs)
+            foreach (Job job in argJobs.OrderBy(j => j.FtpFilename))
             {
                 QueueItem q = new gFtpGUI.QueueItem();
                 var queue = (grdQueue.DataSource as IList<QueueItem>);

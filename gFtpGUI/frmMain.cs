@@ -650,7 +650,10 @@ namespace gFtpGUI
                 {
                     throw new Exception("No Aria2 path was provided!");
                 }
-                foreach (FileItem f in grdFtpFiles.SelectedItems)
+
+                var selectedFtpItems = grdFtpFiles.SelectedItems.Cast<FileItem>().OrderBy(f => f.Name);
+
+                foreach (FileItem f in selectedFtpItems)
                 {
                     if (f.Type != "Directory")
                     {
@@ -732,7 +735,7 @@ namespace gFtpGUI
                 Directory.CreateDirectory(localDestFolder);
             }
             List<Job> jobs = new List<gFtpGUI.Job>();
-            foreach (FtpFile file in argFolder.Files)
+            foreach (FtpFile file in argFolder.Files.OrderBy(f => f.Name))
             {
                 Job j = new gFtpGUI.Job();
                 j.AriaPath = txtAria.Text;
