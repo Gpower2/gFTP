@@ -85,6 +85,29 @@ namespace gFtp
             }
         }
 
+        public async Task DeleteRemoteFolder(string argFolder)
+        {
+            argFolder = argFolder.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFolder));
+            NetworkCredential credentials = new NetworkCredential(FtpUsername, FtpPassword);
+            request.Credentials = credentials;
+            request.UsePassive = true;
+            request.UseBinary = true;
+            request.KeepAlive = false;
+
+            request.Method = WebRequestMethods.Ftp.RemoveDirectory;
+
+            using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
+            {
+                Debug.WriteLine($"Remove directory command Complete, status: '{response.StatusDescription}'");
+
+                if (!response.StatusDescription.StartsWith("250"))
+                {
+                    throw new Exception(response.StatusDescription);
+                }
+            }
+        }
+
         public async Task<FtpFolder> GetFtpFolderDetailsAsync(String argPath, Int32 argLevel)
         {
             // Get the object used to communicate with the server.

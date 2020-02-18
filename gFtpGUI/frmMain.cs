@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using System.Xml;
 using gpower2.gSettings;
+using System.Threading.Tasks;
 
 namespace gFtpGUI
 {
@@ -634,15 +635,82 @@ namespace gFtpGUI
             }
         }
 
+        private async void btnDeleteRemoteFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (grdFtpFiles.SelectedIndex == -1)
+                {
+                    throw new Exception("No Ftp File selected!");
+                }
+
+                // Ask for confirmation from user
+                if (MessageBox.Show(
+                    "Are you sure you want to delete remote files?", 
+                    "Are you sure?", 
+                    MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+
+                foreach (FileItem f in grdFtpFiles.SelectedItems)
+                {
+                    if (f.Type != "Directory")
+                    {
+                        await ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
+                    }
+                    else
+                    {
+                        // First we have to get all the Folders and Directories are inside
+                        FtpFolder fd = await ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
+                        await DeleteFtpFolderAsync(fd);
+                    }
+                }
+
+                // Refresh the ftp grid
+                btnRefreshFtpPath_Click(null, null);
+
+                MessageBox.Show($"The remote file(s) was deleted successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task DeleteFtpFolderAsync(FtpFolder argFolder)
+        {
+            // Delete all the files in the folder
+            foreach (FtpFile file in argFolder.Files)
+            {
+                await ftp.DeleteRemoteFile(UrlHelper.Combine(argFolder.FullPath, file.Name));
+            }            
+
+            // Delete all the sub folders
+            foreach (FtpFolder folder in argFolder.Folders)
+            {
+                if (folder.Name != "..." && folder.Name != ".." && folder.Name != ".")
+                {
+                    await DeleteFtpFolderAsync(folder);
+                }
+            }
+
+            // Delete the folder
+            await ftp.DeleteRemoteFolder(argFolder.FullPath);
+        }
+
+
         private async void btnDownload_Click(object sender, EventArgs e)
         {
             try
             {
-                if(grdFtpFiles.SelectedIndex == -1)
+                if (grdFtpFiles.SelectedIndex == -1)
                 {
                     throw new Exception("No Ftp File selected!");
                 }
-                if(String.IsNullOrWhiteSpace( txtLocalPath.Text))
+                if (String.IsNullOrWhiteSpace(txtLocalPath.Text))
                 {
                     throw new Exception("No local path was selected!");
                 }
@@ -672,7 +740,7 @@ namespace gFtpGUI
                     {
                         // First we have to get all the Folders and Directories are inside
                         FtpFolder fd = await ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
-                        DownloadFtpFolder(fd, txtLocalPath.Text);
+                        await DownloadFtpFolderAsync(fd, txtLocalPath.Text);
                     }
                 }
             }
@@ -683,50 +751,7 @@ namespace gFtpGUI
             }
         }
 
-        private async void btnDeleteRemoteFile_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (grdFtpFiles.SelectedIndex == -1)
-                {
-                    throw new Exception("No Ftp File selected!");
-                }
-
-                // Ask for confirmation from user
-                if (MessageBox.Show(
-                    "Are you sure you want to delete remote files?", 
-                    "Are you sure?", 
-                    MessageBoxButtons.YesNo, 
-                    MessageBoxIcon.Question) == DialogResult.No)
-                {
-                    return;
-                }
-
-                foreach (FileItem f in grdFtpFiles.SelectedItems)
-                {
-                    if (f.Type != "Directory")
-                    {
-                        await ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                // Refresh the ftp grid
-                btnRefreshFtpPath_Click(null, null);
-
-                MessageBox.Show($"The remote file(s) was deleted successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async void DownloadFtpFolder(FtpFolder argFolder, String argLocalRoot)
+        private async Task DownloadFtpFolderAsync(FtpFolder argFolder, String argLocalRoot)
         {
             // Make all the necessary local folders
             String localDestFolder = Path.Combine(argLocalRoot, argFolder.Name);
@@ -755,7 +780,7 @@ namespace gFtpGUI
             {
                 if (folder.Name != "..." && folder.Name != ".." && folder.Name != ".")
                 {
-                    DownloadFtpFolder(folder, localDestFolder);
+                    await DownloadFtpFolderAsync(folder, localDestFolder);
                 }
             }
         }
