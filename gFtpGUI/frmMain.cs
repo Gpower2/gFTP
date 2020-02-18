@@ -669,7 +669,7 @@ namespace gFtpGUI
                 }
 
                 // Refresh the ftp grid
-                btnRefreshFtpPath_Click(null, null);
+                Task.Run(() => btnRefreshFtpPath_Click(null, null)).Wait();
 
                 MessageBox.Show($"The remote file(s) was deleted successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
