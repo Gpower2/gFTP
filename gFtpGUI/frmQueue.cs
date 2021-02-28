@@ -13,6 +13,7 @@ using gFtp;
 using gpower2.gControls;
 using Newtonsoft.Json;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace gFtpGUI
 {
     public partial class frmQueue : Form
@@ -48,6 +49,8 @@ namespace gFtpGUI
                 {
                     grdQueue.DataSource = new List<QueueItem>();
                 }
+
+                UpdateSizeInfo();
             }
             catch (Exception ex)
             {
@@ -57,10 +60,28 @@ namespace gFtpGUI
             }
         }
 
+        private void UpdateSizeInfo()
+        {
+            // Calculate the Size Info
+            IList<QueueItem> queue = grdQueue.DataSource as IList<QueueItem>;
+
+            var totalSize = queue.Sum(j => j.Size.Size);
+            var completedSize = queue.Where(j => j.State == JobState.Completed).Sum(j => j.Size.Size);
+            var failedSize = queue.Where(j => j.State == JobState.Failed).Sum(j => j.Size.Size);
+            var remainingdSize = queue.Where(j => j.State == JobState.Running || j.State == JobState.Pending || j.State == JobState.Ready).Sum(j => j.Size.Size);
+            var waitingSize = queue.Where(j => j.State == JobState.Waiting).Sum(j => j.Size.Size);
+
+            string info = $"Total: {new FileSize(completedSize)} / {new FileSize(totalSize)} | Pending: {new FileSize(remainingdSize)} | Failed: {new FileSize(failedSize)} | Paused: {new FileSize(waitingSize)}";
+
+            txtSizeInfo.Text = info;
+        }
+
         private async Task SaveQueueAsync()
         {
             try
             {
+                UpdateSizeInfo();
+
                 string queueFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gFtpQueue.json");
                 using (StreamWriter sw = new StreamWriter(queueFile, false))
                 {
@@ -176,6 +197,18 @@ namespace gFtpGUI
                 {
                     QueueItem q = (grdQueue.DataSource as IList<QueueItem>).Where(t => t.State == JobState.Pending).OrderBy(t => t.Order).FirstOrDefault();
                     Job j = q.Job;
+                    var fullLocalPath = Path.Combine(j.LocalPath, j.LocalFilename);
+                    if (fullLocalPath.Length > 250)
+                    {
+                        var charactersToRemove = fullLocalPath.Length - 250;
+
+                        var filenameWithoutExtension = Path.GetFileNameWithoutExtension(j.LocalFilename);
+
+                        filenameWithoutExtension = filenameWithoutExtension.Remove(filenameWithoutExtension.Length - charactersToRemove - 1, charactersToRemove);
+
+                        j.LocalFilename = $"{filenameWithoutExtension}{Path.GetExtension(j.LocalFilename)}";
+                    }
+
                     gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Indeterminate);
                     prgBrStatus.Style = ProgressBarStyle.Marquee;
 

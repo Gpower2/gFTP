@@ -14,13 +14,10 @@ namespace gFtp
 
         public static event AriaProgressUpdatedEventHandler AriaProgressUpdated;
 
-        private static Regex _ProgressRegEx = new Regex(@"\s(.*)/.*\((\d*)%.*DL:(\S.*)\s.*ETA:(.*)].*", RegexOptions.Compiled);
+        private static readonly Regex _ProgressRegEx = new Regex(@"\s(.*)/.*\((\d*)%.*DL:(\S.*)\s.*ETA:(.*)].*", RegexOptions.Compiled);
 
         public static Process GetAriaProcess(String argAriaPath, String argFtpPath, String argFtpFilename, String argDestPath, String argDestFilename, gFTP argFtp)
         {
-            ProcessStartInfo myProcessInfo = new ProcessStartInfo();
-            myProcessInfo.FileName = argAriaPath;
-
             StringBuilder argBuilder = new StringBuilder();
             argBuilder.AppendFormat(" --dir=\"{0}\"", argDestPath);
             argBuilder.AppendFormat(" --out=\"{0}\"", argDestFilename.Replace("?", ""));
@@ -33,31 +30,37 @@ namespace gFtp
             argBuilder.AppendFormat(" --ftp-passwd={0}", argFtp.FtpPassword);
             argBuilder.AppendFormat(" \"{0}\"", UrlHelper.Combine(argFtp.FtpDomain, argFtpPath, argFtpFilename).Replace("%", "%25").Replace("#", "%23").Replace("?", "%3f"));
 
-            myProcessInfo.Arguments = argBuilder.ToString();
+            ProcessStartInfo myProcessInfo = new ProcessStartInfo
+            {
+                FileName = argAriaPath,
 
-            myProcessInfo.UseShellExecute = false;
-            myProcessInfo.RedirectStandardOutput = true;
-            myProcessInfo.StandardOutputEncoding = Encoding.UTF8;
-            myProcessInfo.RedirectStandardError = true;
-            myProcessInfo.StandardErrorEncoding = Encoding.UTF8;
-            myProcessInfo.CreateNoWindow = true;
-            myProcessInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                Arguments = argBuilder.ToString(),
 
-            Process myProcess = new Process();
-            myProcess.StartInfo = myProcessInfo;
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                RedirectStandardError = true,
+                StandardErrorEncoding = Encoding.UTF8,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
 
-            Debug.WriteLine(String.Format("Created process Aria for DL {0} => {1}", UrlHelper.Combine(argFtp.FtpDomain, argFtpPath, argFtpFilename), System.IO.Path.Combine(argDestPath, argDestFilename)));
+            Process myProcess = new Process
+            {
+                StartInfo = myProcessInfo
+            };
+
+            Debug.WriteLine(String.Format("Created process Aria for DL {0} => {1}", UrlHelper.Combine(argFtp.FtpDomain, argFtpPath, argFtpFilename), Path.Combine(argDestPath, argDestFilename)));
 
             return myProcess;
         }
 
         public static void OnAriaProgressUpdated(AriaData argData)
         {
-            if (AriaProgressUpdated != null)
-                AriaProgressUpdated(argData);
+            AriaProgressUpdated?.Invoke(argData);
         }
 
-        public static void ProcessOutputLine(Process argProcess, String argLine)
+        public static void ProcessOutputLine(String argLine)
         {
             if (String.IsNullOrWhiteSpace(argLine))
             {
@@ -105,12 +108,12 @@ namespace gFtp
                             reader.Read();
                         }
 
-                        ProcessOutputLine(argProcess, line.ToString());
+                        ProcessOutputLine(line.ToString());
                         line.Length = 0;
                     }
                     else if (c == '\n')
                     {
-                        ProcessOutputLine(argProcess, line.ToString());
+                        ProcessOutputLine(line.ToString());
                         line.Length = 0;
                     }
                     else

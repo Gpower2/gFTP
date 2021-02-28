@@ -33,6 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.grpActions = new System.Windows.Forms.GroupBox();
+            this.btnRemoveDeleted = new System.Windows.Forms.Button();
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
             this.btnUp = new System.Windows.Forms.Button();
@@ -45,19 +46,19 @@
             this.btnRemove = new System.Windows.Forms.Button();
             this.tlpQueue = new System.Windows.Forms.TableLayoutPanel();
             this.grpQueue = new System.Windows.Forms.GroupBox();
-            this.grdQueue = new gpower2.gControls.gDataGridView();
             this.grpProgress = new System.Windows.Forms.GroupBox();
             this.txtAriaData = new System.Windows.Forms.TextBox();
             this.lblAriaData = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.prgBrStatus = new System.Windows.Forms.ProgressBar();
-            this.btnRemoveDeleted = new System.Windows.Forms.Button();
+            this.grdQueue = new gpower2.gControls.gDataGridView();
+            this.txtSizeInfo = new gpower2.gControls.gTextBox();
             this.tlpMain.SuspendLayout();
             this.grpActions.SuspendLayout();
             this.tlpQueue.SuspendLayout();
             this.grpQueue.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.grdQueue)).BeginInit();
             this.grpProgress.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdQueue)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -72,7 +73,7 @@
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 511F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 561F));
             this.tlpMain.Size = new System.Drawing.Size(1484, 561);
             this.tlpMain.TabIndex = 0;
             // 
@@ -96,6 +97,16 @@
             this.grpActions.TabIndex = 1;
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
+            // 
+            // btnRemoveDeleted
+            // 
+            this.btnRemoveDeleted.Location = new System.Drawing.Point(10, 159);
+            this.btnRemoveDeleted.Name = "btnRemoveDeleted";
+            this.btnRemoveDeleted.Size = new System.Drawing.Size(95, 40);
+            this.btnRemoveDeleted.TabIndex = 10;
+            this.btnRemoveDeleted.Text = "Remove Deleted Files";
+            this.btnRemoveDeleted.UseVisualStyleBackColor = true;
+            this.btnRemoveDeleted.Click += new System.EventHandler(this.btnRemoveDeleted_Click);
             // 
             // btnOpenFile
             // 
@@ -223,6 +234,59 @@
             this.grpQueue.TabStop = false;
             this.grpQueue.Text = "Queue";
             // 
+            // grpProgress
+            // 
+            this.grpProgress.Controls.Add(this.txtSizeInfo);
+            this.grpProgress.Controls.Add(this.txtAriaData);
+            this.grpProgress.Controls.Add(this.lblAriaData);
+            this.grpProgress.Controls.Add(this.lblStatus);
+            this.grpProgress.Controls.Add(this.prgBrStatus);
+            this.grpProgress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpProgress.Location = new System.Drawing.Point(3, 468);
+            this.grpProgress.Name = "grpProgress";
+            this.grpProgress.Size = new System.Drawing.Size(1355, 84);
+            this.grpProgress.TabIndex = 1;
+            this.grpProgress.TabStop = false;
+            this.grpProgress.Text = "Progress";
+            // 
+            // txtAriaData
+            // 
+            this.txtAriaData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAriaData.BackColor = System.Drawing.SystemColors.Window;
+            this.txtAriaData.Location = new System.Drawing.Point(45, 55);
+            this.txtAriaData.Name = "txtAriaData";
+            this.txtAriaData.ReadOnly = true;
+            this.txtAriaData.Size = new System.Drawing.Size(1233, 23);
+            this.txtAriaData.TabIndex = 3;
+            // 
+            // lblAriaData
+            // 
+            this.lblAriaData.AutoSize = true;
+            this.lblAriaData.Location = new System.Drawing.Point(11, 59);
+            this.lblAriaData.Name = "lblAriaData";
+            this.lblAriaData.Size = new System.Drawing.Size(28, 15);
+            this.lblAriaData.TabIndex = 2;
+            this.lblAriaData.Text = "Info";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(1291, 26);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(0, 15);
+            this.lblStatus.TabIndex = 1;
+            // 
+            // prgBrStatus
+            // 
+            this.prgBrStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.prgBrStatus.Location = new System.Drawing.Point(618, 19);
+            this.prgBrStatus.Name = "prgBrStatus";
+            this.prgBrStatus.Size = new System.Drawing.Size(660, 27);
+            this.prgBrStatus.TabIndex = 0;
+            // 
             // grdQueue
             // 
             this.grdQueue.AllowUserToAddRows = false;
@@ -277,67 +341,23 @@
             this.grdQueue.TabIndex = 0;
             this.grdQueue.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.grdQueue_MouseDoubleClick);
             // 
-            // grpProgress
+            // txtSizeInfo
             // 
-            this.grpProgress.Controls.Add(this.txtAriaData);
-            this.grpProgress.Controls.Add(this.lblAriaData);
-            this.grpProgress.Controls.Add(this.lblStatus);
-            this.grpProgress.Controls.Add(this.prgBrStatus);
-            this.grpProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpProgress.Location = new System.Drawing.Point(3, 468);
-            this.grpProgress.Name = "grpProgress";
-            this.grpProgress.Size = new System.Drawing.Size(1355, 84);
-            this.grpProgress.TabIndex = 1;
-            this.grpProgress.TabStop = false;
-            this.grpProgress.Text = "Progress";
-            // 
-            // txtAriaData
-            // 
-            this.txtAriaData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAriaData.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAriaData.Location = new System.Drawing.Point(45, 55);
-            this.txtAriaData.Name = "txtAriaData";
-            this.txtAriaData.ReadOnly = true;
-            this.txtAriaData.Size = new System.Drawing.Size(1233, 23);
-            this.txtAriaData.TabIndex = 3;
-            // 
-            // lblAriaData
-            // 
-            this.lblAriaData.AutoSize = true;
-            this.lblAriaData.Location = new System.Drawing.Point(11, 59);
-            this.lblAriaData.Name = "lblAriaData";
-            this.lblAriaData.Size = new System.Drawing.Size(28, 15);
-            this.lblAriaData.TabIndex = 2;
-            this.lblAriaData.Text = "Info";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(1291, 26);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 15);
-            this.lblStatus.TabIndex = 1;
-            // 
-            // prgBrStatus
-            // 
-            this.prgBrStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgBrStatus.Location = new System.Drawing.Point(6, 19);
-            this.prgBrStatus.Name = "prgBrStatus";
-            this.prgBrStatus.Size = new System.Drawing.Size(1272, 27);
-            this.prgBrStatus.TabIndex = 0;
-            // 
-            // btnRemoveDeleted
-            // 
-            this.btnRemoveDeleted.Location = new System.Drawing.Point(10, 159);
-            this.btnRemoveDeleted.Name = "btnRemoveDeleted";
-            this.btnRemoveDeleted.Size = new System.Drawing.Size(95, 40);
-            this.btnRemoveDeleted.TabIndex = 10;
-            this.btnRemoveDeleted.Text = "Remove Deleted Files";
-            this.btnRemoveDeleted.UseVisualStyleBackColor = true;
-            this.btnRemoveDeleted.Click += new System.EventHandler(this.btnRemoveDeleted_Click);
+            this.txtSizeInfo.DataObject = null;
+            this.txtSizeInfo.Decimals = 2;
+            this.txtSizeInfo.DecimalValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtSizeInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.txtSizeInfo.Int32Value = 0;
+            this.txtSizeInfo.Int64Value = ((long)(0));
+            this.txtSizeInfo.Location = new System.Drawing.Point(45, 23);
+            this.txtSizeInfo.Name = "txtSizeInfo";
+            this.txtSizeInfo.Size = new System.Drawing.Size(567, 23);
+            this.txtSizeInfo.TabIndex = 4;
+            this.txtSizeInfo.TextBoxType = gpower2.gControls.gTextBox.gTextBoxType.Text;
             // 
             // frmQueue
             // 
@@ -353,9 +373,9 @@
             this.grpActions.ResumeLayout(false);
             this.tlpQueue.ResumeLayout(false);
             this.grpQueue.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.grdQueue)).EndInit();
             this.grpProgress.ResumeLayout(false);
             this.grpProgress.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdQueue)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -383,5 +403,6 @@
         private System.Windows.Forms.Label lblAriaData;
         private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.Button btnRemoveDeleted;
+        private gpower2.gControls.gTextBox txtSizeInfo;
     }
 }

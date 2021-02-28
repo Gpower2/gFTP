@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using gFtp;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
-using System.Xml;
-using gpower2.gSettings;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
+using gFtp;
+using gpower2.gSettings;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace gFtpGUI
 {
     public partial class frmMain : Form
     {
-        public gFTP ftp = null;
-        public Settings settings = new Settings();
+        private readonly Settings _settings = new Settings();
+
+        private gFTP _ftp = null;
         private frmQueue _FrmQueue = null;
 
         public frmMain()
@@ -86,10 +87,10 @@ namespace gFtpGUI
         {
             String filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.ini");
 
-            gSettingsManager.ReadSettings(settings, filename);
-            if(!String.IsNullOrWhiteSpace(settings.Aria2Path))
+            gSettingsManager.ReadSettings(_settings, filename);
+            if(!String.IsNullOrWhiteSpace(_settings.Aria2Path))
             {
-                txtAria.Text = settings.Aria2Path;
+                txtAria.Text = _settings.Aria2Path;
             }
             else
             {
@@ -123,8 +124,8 @@ namespace gFtpGUI
                 grpFtpFiles.Enabled = false;
                 grpFtpFiles.Cursor = Cursors.WaitCursor;
 
-                ftp = new gFTP(txtFtpServer.Text, txtUsername.Text, txtPassword.Text);
-                FtpFolder f = await ftp.GetFtpFolderDetailsAsync("", 0);
+                _ftp = new gFTP(txtFtpServer.Text, txtUsername.Text, txtPassword.Text);
+                FtpFolder f = await _ftp.GetFtpFolderDetailsAsync("", 0);
                 FillFtpDirectoryTree(f);
 
                 grpFtpServer.Enabled = true;
@@ -149,10 +150,12 @@ namespace gFtpGUI
 
         private void FillFtpDirectoryTree(FtpFolder argFtpInfo)
         {
-            TreeNode rootNode = new TreeNode(argFtpInfo.Name);
-            rootNode.Tag = argFtpInfo;
-            rootNode.ImageKey = "folder";
-            rootNode.SelectedImageKey = "folder_open";
+            TreeNode rootNode = new TreeNode(argFtpInfo.Name)
+            {
+                Tag = argFtpInfo,
+                ImageKey = "folder",
+                SelectedImageKey = "folder_open"
+            };
             GetFtpDirectories(rootNode, 0);
             // First clear nodes
             trvFtpFolders.Nodes.Clear();
@@ -180,10 +183,12 @@ namespace gFtpGUI
                     foreach (FtpFolder subDir in subDirs)
                     {
                         //FtpFolder f = ftp.GetFtpFolderDetails(subDir.FullPath, 0);
-                        TreeNode aNode = new TreeNode(subDir.Name, 0, 0);
-                        aNode.Tag = subDir;
-                        aNode.ImageKey = "folder";
-                        aNode.SelectedImageKey = "folder_open";
+                        TreeNode aNode = new TreeNode(subDir.Name, 0, 0)
+                        {
+                            Tag = subDir,
+                            ImageKey = "folder",
+                            SelectedImageKey = "folder_open"
+                        };
                         GetFtpDirectories(aNode, argLevel - 1);
                         nodeToAddTo.Nodes.Add(aNode);
                     }
@@ -200,7 +205,7 @@ namespace gFtpGUI
 
                 // Read the Sub Directories of the selected node and update the Folder Tree View
                 TreeNode selNode = e.Node;
-                selNode.Tag = await ftp.GetFtpFolderDetailsAsync((selNode.Tag as FtpFolder).FullPath, 0);
+                selNode.Tag = await _ftp.GetFtpFolderDetailsAsync((selNode.Tag as FtpFolder).FullPath, 0);
                 FtpFolder selDirInfo = selNode.Tag as FtpFolder;
                 txtFtpPath.Text = selDirInfo.FullPath;
                 GetFtpDirectories(selNode, 0);
@@ -214,11 +219,13 @@ namespace gFtpGUI
                 // First add the Up Directory only if there is a parent node
                 if (selNode.Parent != null)
                 {
-                    FileItem itemUp = new FileItem();
-                    itemUp.Type = "Directory";
-                    itemUp.Name = "...";
-                    itemUp.Icon = Properties.Resources.folder1.ToBitmap();
-                    itemUp.Size = null;
+                    FileItem itemUp = new FileItem
+                    {
+                        Type = "Directory",
+                        Name = "...",
+                        Icon = Properties.Resources.folder1.ToBitmap(),
+                        Size = null
+                    };
                     items.Add(itemUp);
                 }
 
@@ -235,12 +242,14 @@ namespace gFtpGUI
                 {
                     foreach (FtpFolder dir in localDirs)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = "Directory";
-                        item.Name = dir.Name;
-                        item.Icon = Properties.Resources.folder1.ToBitmap();
-                        item.Date = dir.Date;
-                        item.Size = null;
+                        FileItem item = new FileItem
+                        {
+                            Type = "Directory",
+                            Name = dir.Name,
+                            Icon = Properties.Resources.folder1.ToBitmap(),
+                            Date = dir.Date,
+                            Size = null
+                        };
                         items.Add(item);
                     }
                 }
@@ -258,12 +267,14 @@ namespace gFtpGUI
                 {
                     foreach (FtpFile file in localFiles)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = file.Extension();
-                        item.Name = file.Name;
-                        item.Icon = IconReader.GetFileIcon(file.Extension(), IconReader.IconSize.Small, false).ToBitmap();
-                        item.Date = file.Date;
-                        item.Size = new gFtpGUI.FileSize(file.Size);
+                        FileItem item = new FileItem
+                        {
+                            Type = file.Extension(),
+                            Name = file.Name,
+                            Icon = IconReader.GetFileIcon(file.Extension(), IconReader.IconSize.Small, false).ToBitmap(),
+                            Date = file.Date,
+                            Size = new gFtpGUI.FileSize(file.Size)
+                        };
                         items.Add(item);
                     }
                 }
@@ -287,7 +298,7 @@ namespace gFtpGUI
             }
         }
 
-        private void cmbLocalDrives_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmbLocalDrives_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
@@ -299,7 +310,7 @@ namespace gFtpGUI
                     {
                         txtLocalDriveInfo.Text = String.Format("[{0}] | Size {1} | Free space {2}", selDrive.VolumeLabel, SizeHelper.GetSize(selDrive.TotalSize), SizeHelper.GetSize(selDrive.TotalFreeSpace));
                         txtLocalPath.Text = selDrive.RootDirectory.FullName;
-                        FillLocalDirectoryTree(selDrive.RootDirectory);
+                        await FillLocalDirectoryTree(selDrive.RootDirectory);
                     }
                     else
                     {
@@ -318,7 +329,7 @@ namespace gFtpGUI
             }
         }
 
-        private void btnRefreshLocalPath_Click(object sender, EventArgs e)
+        private async void btnRefreshLocalPath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -336,179 +347,25 @@ namespace gFtpGUI
                     }
                 }
 
-                if (trvLocalFolders.SelectedNode != null)
+                if (trvLocalFolders.SelectedNode == null)
                 {
-                    // Read the Sub Directories of the selected node and update the Folder Tree View
-                    TreeNode selNode = trvLocalFolders.SelectedNode;
-                    DirectoryInfo selDirInfo = selNode.Tag as DirectoryInfo;
-                    txtLocalPath.Text = selDirInfo.FullName;
-                    GetDirectories(selNode, 1);
-
-                    // Read the contents and add them to the ListView
-                    // Keep the sorted column and order
-                    DataGridViewColumn sortColumn = grdLocalFiles.SortedColumn;
-                    SortOrder sortOrder = grdLocalFiles.SortOrder;
-                    int oldSelection = grdLocalFiles.SelectedIndex;
-                    int oldVerticalOffset = grdLocalFiles.FirstDisplayedScrollingRowIndex;
-                    // First clear the list view contents
-                    grdLocalFiles.DataSource = null;
-
-                    List<FileItem> items = new List<FileItem>();
-
-                    // First add the Up Directory only if there is a parent node
-                    if (selNode.Parent != null)
-                    {
-                        FileItem itemUp = new FileItem();
-                        itemUp.Type = "Directory";
-                        itemUp.Name = "...";
-                        itemUp.Icon = Properties.Resources.folder1.ToBitmap();
-                        itemUp.Size = null;
-                        items.Add(itemUp);
-                    }
-
-                    DirectoryInfo[] localDirs = null;
-                    try
-                    {
-                        localDirs = selDirInfo.GetDirectories();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                    if (localDirs != null)
-                    {
-                        foreach (DirectoryInfo dir in localDirs)
-                        {
-                            FileItem item = new FileItem();
-                            item.Type = "Directory";
-                            item.Name = dir.Name;
-                            item.Icon = Properties.Resources.folder1.ToBitmap();
-                            item.Date = dir.LastWriteTime;
-                            item.Size = null;
-                            items.Add(item);
-                        }
-                    }
-
-                    FileInfo[] localFiles = null;
-                    try
-                    {
-                        localFiles = selDirInfo.GetFiles();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                    if (localFiles != null)
-                    {
-                        foreach (FileInfo file in localFiles)
-                        {
-                            FileItem item = new FileItem();
-                            item.Type = file.Extension;
-                            item.Name = file.Name;
-                            item.Icon = IconReader.GetFileIcon(file.Extension, IconReader.IconSize.Small, false).ToBitmap();
-                            item.Date = file.LastWriteTime;
-                            item.Size = new gFtpGUI.FileSize(file.Length);
-                            items.Add(item);
-                        }
-                    }
-
-                    grdLocalFiles.DataSource = items;
-
-                    // Set the sortedColumn and order again
-                    if (sortColumn != null)
-                    {
-                        // Find the new DataGridViewColumn
-                        DataGridViewColumn newSortColumn = grdLocalFiles.Columns.Cast<DataGridViewColumn>().FirstOrDefault(c => c.Name == sortColumn.Name);
-                        if (newSortColumn != null)
-                        {
-                            if (sortOrder == SortOrder.Ascending)
-                            {
-                                grdLocalFiles.Sort(newSortColumn, ListSortDirection.Ascending);
-                            }
-                            else if (sortOrder == SortOrder.Descending)
-                            {
-                                grdLocalFiles.Sort(newSortColumn, ListSortDirection.Descending);
-                            }
-                        }
-                    }
-
-                    if (oldVerticalOffset > grdLocalFiles.Rows.Count - 1)
-                    {
-                        oldVerticalOffset = grdLocalFiles.Rows.Count - 1;
-                    }
-                    grdLocalFiles.FirstDisplayedScrollingRowIndex = oldVerticalOffset;
-
-                    if (oldSelection > grdLocalFiles.Rows.Count - 1)
-                    {
-                        oldSelection = grdLocalFiles.Rows.Count - 1;
-                    }
-                    grdLocalFiles.SetSelectedRowByIndex(oldSelection, false);
-
-                    grdLocalFiles.PerformLayout();
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
-        private void FillLocalDirectoryTree(DirectoryInfo argInfo)
-        {
-            TreeNode rootNode = new TreeNode(argInfo.Name);
-            rootNode.Tag = argInfo;
-            rootNode.ImageKey = "folder";
-            rootNode.SelectedImageKey = "folder_open";
-            GetDirectories(rootNode, 1);
-            // First clear nodes
-            trvLocalFolders.Nodes.Clear();
-            // Add the new nodes
-            trvLocalFolders.Nodes.Add(rootNode);
-        }
+                grpLocalFiles.Enabled = false;
 
-        private void GetDirectories(TreeNode nodeToAddTo, Int32 argLevel)
-        {
-            if (argLevel > 0)
-            {
-                // First clear the nodes
-                nodeToAddTo.Nodes.Clear();
-                DirectoryInfo[] subDirs = null;
-                try
-                {
-                    subDirs = (nodeToAddTo.Tag as DirectoryInfo).GetDirectories();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-                if (subDirs != null)
-                {
-                    foreach (DirectoryInfo subDir in subDirs)
-                    {
-                        TreeNode aNode = new TreeNode(subDir.Name, 0, 0);
-                        aNode.Tag = subDir;
-                        aNode.ImageKey = "folder";
-                        aNode.SelectedImageKey = "folder_open";
-                        GetDirectories(aNode, argLevel - 1);
-                        nodeToAddTo.Nodes.Add(aNode);
-                    }
-                }
-            }
-        }
-
-        private void trvLocalFolders_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            try
-            {
                 // Read the Sub Directories of the selected node and update the Folder Tree View
-                TreeNode selNode = e.Node;
+                TreeNode selNode = trvLocalFolders.SelectedNode;
                 DirectoryInfo selDirInfo = selNode.Tag as DirectoryInfo;
                 txtLocalPath.Text = selDirInfo.FullName;
-                GetDirectories(selNode, 1);
-
+                await GetDirectories(selNode, 1);
 
                 // Read the contents and add them to the ListView
+                // Keep the sorted column and order
+                DataGridViewColumn sortColumn = grdLocalFiles.SortedColumn;
+                SortOrder sortOrder = grdLocalFiles.SortOrder;
+                int oldSelection = grdLocalFiles.SelectedIndex;
+                int oldVerticalOffset = grdLocalFiles.FirstDisplayedScrollingRowIndex;
                 // First clear the list view contents
                 grdLocalFiles.DataSource = null;
 
@@ -517,11 +374,13 @@ namespace gFtpGUI
                 // First add the Up Directory only if there is a parent node
                 if (selNode.Parent != null)
                 {
-                    FileItem itemUp = new FileItem();
-                    itemUp.Type = "Directory";
-                    itemUp.Name = "...";
-                    itemUp.Icon = Properties.Resources.folder1.ToBitmap();
-                    itemUp.Size = null;
+                    FileItem itemUp = new FileItem
+                    {
+                        Type = "Directory",
+                        Name = "...",
+                        Icon = Properties.Resources.folder1.ToBitmap(),
+                        Size = null
+                    };
                     items.Add(itemUp);
                 }
 
@@ -538,12 +397,14 @@ namespace gFtpGUI
                 {
                     foreach (DirectoryInfo dir in localDirs)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = "Directory";
-                        item.Name = dir.Name;
-                        item.Icon = Properties.Resources.folder1.ToBitmap();
-                        item.Date = dir.LastWriteTime;
-                        item.Size = null;
+                        FileItem item = new FileItem
+                        {
+                            Type = "Directory",
+                            Name = dir.Name,
+                            Icon = Properties.Resources.folder1.ToBitmap(),
+                            Date = dir.LastWriteTime,
+                            Size = null
+                        };
                         items.Add(item);
                     }
                 }
@@ -561,22 +422,204 @@ namespace gFtpGUI
                 {
                     foreach (FileInfo file in localFiles)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = file.Extension;
-                        item.Name = file.Name;
-                        item.Icon = IconReader.GetFileIcon(file.Extension, IconReader.IconSize.Small, false).ToBitmap();
-                        item.Date = file.LastWriteTime;
-                        item.Size = new gFtpGUI.FileSize(file.Length);
+                        FileItem item = new FileItem
+                        {
+                            Type = file.Extension,
+                            Name = file.Name,
+                            Icon = IconReader.GetFileIcon(file.Extension, IconReader.IconSize.Small, false).ToBitmap(),
+                            Date = file.LastWriteTime,
+                            Size = new gFtpGUI.FileSize(file.Length)
+                        };
                         items.Add(item);
                     }
                 }
 
                 grdLocalFiles.DataSource = items;
+
+                // Set the sortedColumn and order again
+                if (sortColumn != null)
+                {
+                    // Find the new DataGridViewColumn
+                    DataGridViewColumn newSortColumn = grdLocalFiles.Columns.Cast<DataGridViewColumn>().FirstOrDefault(c => c.Name == sortColumn.Name);
+                    if (newSortColumn != null)
+                    {
+                        if (sortOrder == SortOrder.Ascending)
+                        {
+                            grdLocalFiles.Sort(newSortColumn, ListSortDirection.Ascending);
+                        }
+                        else if (sortOrder == SortOrder.Descending)
+                        {
+                            grdLocalFiles.Sort(newSortColumn, ListSortDirection.Descending);
+                        }
+                    }
+                }
+
+                if (oldVerticalOffset > grdLocalFiles.Rows.Count - 1)
+                {
+                    oldVerticalOffset = grdLocalFiles.Rows.Count - 1;
+                }
+                grdLocalFiles.FirstDisplayedScrollingRowIndex = oldVerticalOffset;
+
+                if (oldSelection > grdLocalFiles.Rows.Count - 1)
+                {
+                    oldSelection = grdLocalFiles.Rows.Count - 1;
+                }
+                grdLocalFiles.SetSelectedRowByIndex(oldSelection, false);
+
+                grdLocalFiles.PerformLayout();
+
+                grdLocalFiles.Enabled = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                grdLocalFiles.Enabled = true;
+            }
+        }
+
+        private async Task FillLocalDirectoryTree(DirectoryInfo argInfo)
+        {
+            TreeNode rootNode = new TreeNode(argInfo.Name)
+            {
+                Tag = argInfo,
+                ImageKey = "folder",
+                SelectedImageKey = "folder_open"
+            };
+
+            await GetDirectories(rootNode, 1);
+            
+            // First clear nodes
+            trvLocalFolders.Nodes.Clear();
+            
+            // Add the new nodes
+            trvLocalFolders.Nodes.Add(rootNode);
+        }
+
+        private async Task GetDirectories(TreeNode nodeToAddTo, Int32 argLevel)
+        {
+            if (argLevel > 0)
+            {
+                // First clear the nodes
+                nodeToAddTo.Nodes.Clear();
+                DirectoryInfo[] subDirs = null;
+                try
+                {
+                    subDirs = await Task.Run(() => (nodeToAddTo.Tag as DirectoryInfo).GetDirectories());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                if (subDirs != null)
+                {
+                    foreach (DirectoryInfo subDir in subDirs)
+                    {
+                        TreeNode aNode = new TreeNode(subDir.Name, 0, 0)
+                        {
+                            Tag = subDir,
+                            ImageKey = "folder",
+                            SelectedImageKey = "folder_open"
+                        };
+                        await GetDirectories(aNode, argLevel - 1);
+                        nodeToAddTo.Nodes.Add(aNode);
+                    }
+                }
+            }
+        }
+
+        private async void trvLocalFolders_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                grdLocalFiles.Enabled = false;
+
+                // Read the Sub Directories of the selected node and update the Folder Tree View
+                TreeNode selNode = e.Node;
+                DirectoryInfo selDirInfo = selNode.Tag as DirectoryInfo;
+                txtLocalPath.Text = selDirInfo.FullName;
+                await GetDirectories(selNode, 1);
+
+                // Read the contents and add them to the ListView
+                // First clear the list view contents
+                grdLocalFiles.DataSource = null;
+
+                List<FileItem> items = new List<FileItem>();
+
+                // First add the Up Directory only if there is a parent node
+                if (selNode.Parent != null)
+                {
+                    FileItem itemUp = new FileItem
+                    {
+                        Type = "Directory",
+                        Name = "...",
+                        Icon = Properties.Resources.folder1.ToBitmap(),
+                        Size = null
+                    };
+                    items.Add(itemUp);
+                }
+
+                DirectoryInfo[] localDirs = null;
+                try
+                {
+                    localDirs = selDirInfo.GetDirectories();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                if (localDirs != null)
+                {
+                    foreach (DirectoryInfo dir in localDirs)
+                    {
+                        FileItem item = new FileItem
+                        {
+                            Type = "Directory",
+                            Name = dir.Name,
+                            Icon = Properties.Resources.folder1.ToBitmap(),
+                            Date = dir.LastWriteTime,
+                            Size = null
+                        };
+                        items.Add(item);
+                    }
+                }
+
+                FileInfo[] localFiles = null;
+                try
+                {
+                    localFiles = selDirInfo.GetFiles();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                if (localFiles != null)
+                {
+                    foreach (FileInfo file in localFiles)
+                    {
+                        FileItem item = new FileItem
+                        {
+                            Type = file.Extension,
+                            Name = file.Name,
+                            Icon = IconReader.GetFileIcon(file.Extension, IconReader.IconSize.Small, false).ToBitmap(),
+                            Date = file.LastWriteTime,
+                            Size = new gFtpGUI.FileSize(file.Length)
+                        };
+                        items.Add(item);
+                    }
+                }
+
+                grdLocalFiles.DataSource = items;
+
+                grdLocalFiles.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                grdLocalFiles.Enabled = true;
             }
         }
 
@@ -620,9 +663,11 @@ namespace gFtpGUI
         {
             try
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "Select aria2...";
-                ofd.FileName = "aria2c.exe";
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Title = "Select aria2...",
+                    FileName = "aria2c.exe"
+                };
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     txtAria.Text = ofd.FileName;
@@ -658,12 +703,12 @@ namespace gFtpGUI
                 {
                     if (f.Type != "Directory")
                     {
-                        await ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
+                        await _ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
                     }
                     else
                     {
                         // First we have to get all the Folders and Directories are inside
-                        FtpFolder fd = await ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
+                        FtpFolder fd = await _ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
                         await DeleteFtpFolderAsync(fd);
                     }
                 }
@@ -685,7 +730,7 @@ namespace gFtpGUI
             // Delete all the files in the folder
             foreach (FtpFile file in argFolder.Files)
             {
-                await ftp.DeleteRemoteFile(UrlHelper.Combine(argFolder.FullPath, file.Name));
+                await _ftp.DeleteRemoteFile(UrlHelper.Combine(argFolder.FullPath, file.Name));
             }            
 
             // Delete all the sub folders
@@ -698,7 +743,7 @@ namespace gFtpGUI
             }
 
             // Delete the folder
-            await ftp.DeleteRemoteFolder(argFolder.FullPath);
+            await _ftp.DeleteRemoteFolder(argFolder.FullPath);
         }
 
 
@@ -725,21 +770,23 @@ namespace gFtpGUI
                 {
                     if (f.Type != "Directory")
                     {
-                        Job j = new gFtpGUI.Job();
-                        j.AriaPath = txtAria.Text;
-                        j.FtpPath = txtFtpPath.Text;
-                        j.FtpFilename = f.Name;
-                        j.LocalPath = txtLocalPath.Text;
-                        j.LocalFilename = f.Name;
-                        j.Size = f.Size;
-                        j.Ftp = ftp;
+                        Job j = new gFtpGUI.Job
+                        {
+                            AriaPath = txtAria.Text,
+                            FtpPath = txtFtpPath.Text,
+                            FtpFilename = f.Name,
+                            LocalPath = txtLocalPath.Text,
+                            LocalFilename = f.Name,
+                            Size = f.Size,
+                            Ftp = _ftp
+                        };
 
                         await _FrmQueue.AddJobAsync(j);
                     }
                     else
                     {
                         // First we have to get all the Folders and Directories are inside
-                        FtpFolder fd = await ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
+                        FtpFolder fd = await _ftp.GetFtpFolderDetailsAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name), Int32.MaxValue);
                         await DownloadFtpFolderAsync(fd, txtLocalPath.Text);
                     }
                 }
@@ -762,14 +809,16 @@ namespace gFtpGUI
             List<Job> jobs = new List<gFtpGUI.Job>();
             foreach (FtpFile file in argFolder.Files.OrderBy(f => f.Name))
             {
-                Job j = new gFtpGUI.Job();
-                j.AriaPath = txtAria.Text;
-                j.FtpPath = argFolder.FullPath;
-                j.FtpFilename = file.Name;
-                j.LocalPath = localDestFolder;
-                j.LocalFilename = file.Name;
-                j.Size = new FileSize(file.Size);
-                j.Ftp = ftp;
+                Job j = new gFtpGUI.Job
+                {
+                    AriaPath = txtAria.Text,
+                    FtpPath = argFolder.FullPath,
+                    FtpFilename = file.Name,
+                    LocalPath = localDestFolder,
+                    LocalFilename = file.Name,
+                    Size = new FileSize(file.Size),
+                    Ftp = _ftp
+                };
 
                 jobs.Add(j);
 
@@ -929,7 +978,7 @@ namespace gFtpGUI
 
                 // Read the Sub Directories of the selected node and update the Folder Tree View
                 TreeNode selNode = trvFtpFolders.SelectedNode;
-                selNode.Tag = await ftp.GetFtpFolderDetailsAsync((selNode.Tag as FtpFolder).FullPath, 0);
+                selNode.Tag = await _ftp.GetFtpFolderDetailsAsync((selNode.Tag as FtpFolder).FullPath, 0);
                 FtpFolder selDirInfo = selNode.Tag as FtpFolder;
                 txtFtpPath.Text = selDirInfo.FullPath;
                 GetFtpDirectories(selNode, 0);
@@ -948,11 +997,13 @@ namespace gFtpGUI
                 // First add the Up Directory only if there is a parent node
                 if (selNode.Parent != null)
                 {
-                    FileItem itemUp = new FileItem();
-                    itemUp.Type = "Directory";
-                    itemUp.Name = "...";
-                    itemUp.Icon = Properties.Resources.folder1.ToBitmap();
-                    itemUp.Size = null;
+                    FileItem itemUp = new FileItem
+                    {
+                        Type = "Directory",
+                        Name = "...",
+                        Icon = Properties.Resources.folder1.ToBitmap(),
+                        Size = null
+                    };
                     items.Add(itemUp);
                 }
 
@@ -969,12 +1020,14 @@ namespace gFtpGUI
                 {
                     foreach (FtpFolder dir in localDirs)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = "Directory";
-                        item.Name = dir.Name;
-                        item.Icon = Properties.Resources.folder1.ToBitmap();
-                        item.Date = dir.Date;
-                        item.Size = null;
+                        FileItem item = new FileItem
+                        {
+                            Type = "Directory",
+                            Name = dir.Name,
+                            Icon = Properties.Resources.folder1.ToBitmap(),
+                            Date = dir.Date,
+                            Size = null
+                        };
                         items.Add(item);
                     }
                 }
@@ -992,12 +1045,14 @@ namespace gFtpGUI
                 {
                     foreach (FtpFile file in localFiles)
                     {
-                        FileItem item = new FileItem();
-                        item.Type = file.Extension();
-                        item.Name = file.Name;
-                        item.Icon = IconReader.GetFileIcon(file.Extension(), IconReader.IconSize.Small, false).ToBitmap();
-                        item.Date = file.Date;
-                        item.Size = new gFtpGUI.FileSize(file.Size);
+                        FileItem item = new FileItem
+                        {
+                            Type = file.Extension(),
+                            Name = file.Name,
+                            Icon = IconReader.GetFileIcon(file.Extension(), IconReader.IconSize.Small, false).ToBitmap(),
+                            Date = file.Date,
+                            Size = new gFtpGUI.FileSize(file.Size)
+                        };
                         items.Add(item);
                     }
                 }
@@ -1108,10 +1163,12 @@ namespace gFtpGUI
                     throw new Exception("The FTP connection already exists!");
                 }
 
-                FtpConnection newCon = new FtpConnection();
-                newCon.Server = txtFtpServer.Text.Trim();
-                newCon.Username = txtUsername.Text.Trim();
-                newCon.Password = txtPassword.Text.Trim();
+                FtpConnection newCon = new FtpConnection
+                {
+                    Server = txtFtpServer.Text.Trim(),
+                    Username = txtUsername.Text.Trim(),
+                    Password = txtPassword.Text.Trim()
+                };
 
                 List<FtpConnection> newList = cmbFtpConnections.DataSource as List<FtpConnection>;
                 newList.Add(newCon);
@@ -1199,8 +1256,8 @@ namespace gFtpGUI
             try
             {
                 String filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.ini");
-                settings.Aria2Path = txtAria.Text.Trim();
-                gSettingsManager.SaveSettings(settings, filename);
+                _settings.Aria2Path = txtAria.Text.Trim();
+                gSettingsManager.SaveSettings(_settings, filename);
             }
             catch (Exception ex)
             {
@@ -1213,6 +1270,7 @@ namespace gFtpGUI
         {
             try
             {
+                _FrmQueue.WindowState = FormWindowState.Normal;
                 _FrmQueue.Show();
                 _FrmQueue.Select();
             }
