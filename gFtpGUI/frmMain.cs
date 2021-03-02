@@ -468,7 +468,7 @@ namespace gFtpGUI
 
                 grdLocalFiles.PerformLayout();
 
-                grdLocalFiles.Enabled = true;
+                grpLocalFiles.Enabled = true;
             }
             catch (Exception ex)
             {

@@ -251,7 +251,7 @@ namespace gFtp
                             foundEndIndex = true;
                             if(currentElement == 8)
                             {
-                                elements[currentElement] = argLine.Substring(endIndex + 1).Trim();
+                                elements[currentElement] = argLine.Substring(endIndex + 1);
                                 break;
                             }
                         }

@@ -175,6 +175,7 @@ namespace gFtpGUI
 
         private void ClearProgress()
         {
+            prgBrStatus.Style = ProgressBarStyle.Continuous;
             prgBrStatus.Value = 0;
             lblStatus.Text = "";
             txtAriaData.Clear();
