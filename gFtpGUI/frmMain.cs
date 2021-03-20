@@ -353,6 +353,8 @@ namespace gFtpGUI
                 }
 
                 grpLocalFiles.Enabled = false;
+                grpLocalFiles.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
 
                 // Read the Sub Directories of the selected node and update the Folder Tree View
                 TreeNode selNode = trvLocalFolders.SelectedNode;
@@ -469,13 +471,17 @@ namespace gFtpGUI
                 grdLocalFiles.PerformLayout();
 
                 grpLocalFiles.Enabled = true;
+                grpLocalFiles.Cursor = Cursors.Default;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+
+                grpLocalFiles.Cursor = Cursors.Default;
+
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                grdLocalFiles.Enabled = true;
+                grpLocalFiles.Enabled = true;
             }
         }
 
@@ -533,7 +539,9 @@ namespace gFtpGUI
         {
             try
             {
-                grdLocalFiles.Enabled = false;
+                grpLocalFiles.Enabled = false;
+                grpLocalFiles.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
 
                 // Read the Sub Directories of the selected node and update the Folder Tree View
                 TreeNode selNode = e.Node;
@@ -612,14 +620,18 @@ namespace gFtpGUI
 
                 grdLocalFiles.DataSource = items;
 
-                grdLocalFiles.Enabled = true;
+                grpLocalFiles.Enabled = true;
+                grpLocalFiles.Cursor = Cursors.Default;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+
+                grpLocalFiles.Cursor = Cursors.Default;
+
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                grdLocalFiles.Enabled = true;
+                grpLocalFiles.Enabled = true;
             }
         }
 
@@ -699,6 +711,13 @@ namespace gFtpGUI
                     return;
                 }
 
+                grpFtpFiles.Enabled = false;
+                grpFtpServer.Enabled = false;
+                btnDeleteRemoteFile.Enabled = false;
+                grpFtpFiles.Cursor = Cursors.WaitCursor;
+                grpFtpServer.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 foreach (FileItem f in grdFtpFiles.SelectedItems)
                 {
                     if (f.Type != "Directory")
@@ -714,14 +733,32 @@ namespace gFtpGUI
                 }
 
                 // Refresh the ftp grid
-                btnRefreshFtpPath_Click(null, null);
+                TaskCompletionSource<int> t = new TaskCompletionSource<int>();
+                btnRefreshFtpPath_Click(t, null);
+
+                await t.Task;
+
+                grpFtpFiles.Cursor = Cursors.Default;
+                grpFtpServer.Cursor = Cursors.Default;
 
                 MessageBox.Show($"The remote file(s) was deleted successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                grpFtpFiles.Enabled = true;
+                grpFtpServer.Enabled = true;
+                btnDeleteRemoteFile.Enabled = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+
+                grpFtpFiles.Cursor = Cursors.Default;
+                grpFtpServer.Cursor = Cursors.Default;
+
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                grpFtpFiles.Enabled = true;
+                grpFtpServer.Enabled = true;
+                btnDeleteRemoteFile.Enabled = true;
             }
         }
 
@@ -764,6 +801,12 @@ namespace gFtpGUI
                     throw new Exception("No Aria2 path was provided!");
                 }
 
+                grpFtpFiles.Enabled = false;
+                grpFtpServer.Enabled = false;
+                grpFtpFiles.Cursor = Cursors.WaitCursor;
+                grpFtpServer.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 var selectedFtpItems = grdFtpFiles.SelectedItems.Cast<FileItem>().OrderBy(f => f.Name);
 
                 foreach (FileItem f in selectedFtpItems)
@@ -790,11 +833,23 @@ namespace gFtpGUI
                         await DownloadFtpFolderAsync(fd, txtLocalPath.Text);
                     }
                 }
+
+                grpFtpFiles.Enabled = true;
+                grpFtpServer.Enabled = true;
+                grpFtpFiles.Cursor = Cursors.Default;
+                grpFtpServer.Cursor = Cursors.Default;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+
+                grpFtpFiles.Cursor = Cursors.Default;
+                grpFtpServer.Cursor = Cursors.Default;
+
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                grpFtpFiles.Enabled = true;
+                grpFtpServer.Enabled = true;
             }
         }
 
@@ -966,10 +1021,17 @@ namespace gFtpGUI
 
         private async void btnRefreshFtpPath_Click(object sender, EventArgs e)
         {
+            TaskCompletionSource<int> taskCompletionSource = null;
+            if (sender is TaskCompletionSource<int> t)
+            {
+                taskCompletionSource = t;
+            }
+
             try
             {
                 if (trvFtpFolders.SelectedNode == null)
                 {
+                    taskCompletionSource?.SetResult(1);
                     return;
                 }
 
@@ -1098,6 +1160,8 @@ namespace gFtpGUI
                 grdFtpFiles.PerformLayout();
 
                 grpFtpFiles.Cursor = Cursors.Default;
+
+                taskCompletionSource?.SetResult(1);
             }
             catch (Exception ex)
             {
@@ -1106,6 +1170,8 @@ namespace gFtpGUI
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 grpFtpFiles.Enabled = true;
+
+                taskCompletionSource?.SetResult(1);
             }
         }
 
