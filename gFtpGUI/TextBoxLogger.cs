@@ -54,7 +54,7 @@ namespace gFtpGUI
                     break;
             }
 
-            _textBox.Invoke(new Action(() => _textBox.AppendText($"[{DateTime.Now:yyy-MM-ff HH:mm:ss}][{shortLevel}] {message}{Environment.NewLine}")));
+            _textBox.Invoke(new Action(() => _textBox.AppendText($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}][{shortLevel}] {message?.Trim()}{Environment.NewLine}")));
         }
     }
 }
