@@ -170,7 +170,7 @@
             this.grpFtpFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpFtpFiles.Location = new System.Drawing.Point(0, 0);
             this.grpFtpFiles.Name = "grpFtpFiles";
-            this.grpFtpFiles.Size = new System.Drawing.Size(593, 462);
+            this.grpFtpFiles.Size = new System.Drawing.Size(593, 485);
             this.grpFtpFiles.TabIndex = 11;
             this.grpFtpFiles.TabStop = false;
             this.grpFtpFiles.Text = "FTP";
@@ -188,7 +188,7 @@
             this.tlpFtpContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tlpFtpContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpFtpContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpFtpContents.Size = new System.Drawing.Size(587, 440);
+            this.tlpFtpContents.Size = new System.Drawing.Size(587, 463);
             this.tlpFtpContents.TabIndex = 0;
             // 
             // spltFtp
@@ -204,7 +204,7 @@
             // spltFtp.Panel2
             // 
             this.spltFtp.Panel2.Controls.Add(this.grdFtpFiles);
-            this.spltFtp.Size = new System.Drawing.Size(581, 394);
+            this.spltFtp.Size = new System.Drawing.Size(581, 417);
             this.spltFtp.SplitterDistance = 198;
             this.spltFtp.TabIndex = 9;
             // 
@@ -213,7 +213,7 @@
             this.trvFtpFolders.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trvFtpFolders.Location = new System.Drawing.Point(0, 0);
             this.trvFtpFolders.Name = "trvFtpFolders";
-            this.trvFtpFolders.Size = new System.Drawing.Size(198, 394);
+            this.trvFtpFolders.Size = new System.Drawing.Size(198, 417);
             this.trvFtpFolders.TabIndex = 0;
             this.trvFtpFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trvFtpFolders_AfterSelect);
             // 
@@ -267,7 +267,7 @@
             this.grdFtpFiles.RowHeadersVisible = false;
             this.grdFtpFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grdFtpFiles.ShowFooterRow = false;
-            this.grdFtpFiles.Size = new System.Drawing.Size(379, 394);
+            this.grdFtpFiles.Size = new System.Drawing.Size(379, 417);
             this.grdFtpFiles.TabIndex = 1;
             this.grdFtpFiles.DoubleClick += new System.EventHandler(this.grdFtpFiles_DoubleClick);
             // 
@@ -319,7 +319,7 @@
             this.grpLocalFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpLocalFiles.Location = new System.Drawing.Point(0, 0);
             this.grpLocalFiles.Name = "grpLocalFiles";
-            this.grpLocalFiles.Size = new System.Drawing.Size(668, 462);
+            this.grpLocalFiles.Size = new System.Drawing.Size(668, 485);
             this.grpLocalFiles.TabIndex = 12;
             this.grpLocalFiles.TabStop = false;
             this.grpLocalFiles.Text = "LocalFiles";
@@ -339,7 +339,7 @@
             this.tlpLocalContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tlpLocalContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tlpLocalContents.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLocalContents.Size = new System.Drawing.Size(662, 440);
+            this.tlpLocalContents.Size = new System.Drawing.Size(662, 463);
             this.tlpLocalContents.TabIndex = 1;
             // 
             // spltLocal
@@ -355,7 +355,7 @@
             // spltLocal.Panel2
             // 
             this.spltLocal.Panel2.Controls.Add(this.grdLocalFiles);
-            this.spltLocal.Size = new System.Drawing.Size(656, 354);
+            this.spltLocal.Size = new System.Drawing.Size(656, 377);
             this.spltLocal.SplitterDistance = 257;
             this.spltLocal.TabIndex = 11;
             // 
@@ -364,7 +364,7 @@
             this.trvLocalFolders.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trvLocalFolders.Location = new System.Drawing.Point(0, 0);
             this.trvLocalFolders.Name = "trvLocalFolders";
-            this.trvLocalFolders.Size = new System.Drawing.Size(257, 354);
+            this.trvLocalFolders.Size = new System.Drawing.Size(257, 377);
             this.trvLocalFolders.TabIndex = 0;
             this.trvLocalFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trvLocalFolders_AfterSelect);
             // 
@@ -418,7 +418,7 @@
             this.grdLocalFiles.RowHeadersVisible = false;
             this.grdLocalFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grdLocalFiles.ShowFooterRow = false;
-            this.grdLocalFiles.Size = new System.Drawing.Size(395, 354);
+            this.grdLocalFiles.Size = new System.Drawing.Size(395, 377);
             this.grdLocalFiles.TabIndex = 0;
             this.grdLocalFiles.DoubleClick += new System.EventHandler(this.grdLocalFiles_DoubleClick);
             // 
@@ -509,9 +509,9 @@
             // 
             this.grpLog.Controls.Add(this.txtLog);
             this.grpLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpLog.Location = new System.Drawing.Point(3, 591);
+            this.grpLog.Location = new System.Drawing.Point(3, 614);
             this.grpLog.Name = "grpLog";
-            this.grpLog.Size = new System.Drawing.Size(1265, 94);
+            this.grpLog.Size = new System.Drawing.Size(1265, 144);
             this.grpLog.TabIndex = 13;
             this.grpLog.TabStop = false;
             this.grpLog.Text = "Log";
@@ -525,9 +525,10 @@
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
-            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(1259, 72);
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtLog.Size = new System.Drawing.Size(1259, 122);
             this.txtLog.TabIndex = 0;
+            this.txtLog.WordWrap = false;
             // 
             // btnDownload
             // 
@@ -611,8 +612,8 @@
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(1271, 688);
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tlpMain.Size = new System.Drawing.Size(1271, 761);
             this.tlpMain.TabIndex = 16;
             // 
             // spltFiles
@@ -628,7 +629,7 @@
             // spltFiles.Panel2
             // 
             this.spltFiles.Panel2.Controls.Add(this.grpLocalFiles);
-            this.spltFiles.Size = new System.Drawing.Size(1265, 462);
+            this.spltFiles.Size = new System.Drawing.Size(1265, 485);
             this.spltFiles.SplitterDistance = 593;
             this.spltFiles.TabIndex = 16;
             // 
@@ -642,7 +643,7 @@
             this.grpActions.Controls.Add(this.txtAria);
             this.grpActions.Controls.Add(this.btnDownload);
             this.grpActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpActions.Location = new System.Drawing.Point(3, 531);
+            this.grpActions.Location = new System.Drawing.Point(3, 554);
             this.grpActions.Name = "grpActions";
             this.grpActions.Size = new System.Drawing.Size(1265, 54);
             this.grpActions.TabIndex = 17;
@@ -718,7 +719,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1271, 688);
+            this.ClientSize = new System.Drawing.Size(1271, 761);
             this.Controls.Add(this.tlpMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.Name = "frmMain";

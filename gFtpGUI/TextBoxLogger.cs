@@ -25,7 +25,36 @@ namespace gFtpGUI
                 message += formatter(state, exception);
             }
 
-            _textBox.Invoke(new Action(() => _textBox.AppendText($"[{DateTime.Now:yyy-MM-ff HH:mm:ss}][{logLevel}][{eventId.Id}]{message}{Environment.NewLine}")));
+            string shortLevel = "";
+            switch (logLevel)
+            {
+                case LogLevel.Trace:
+                    shortLevel = "TRC";
+                    break;
+                case LogLevel.Debug:
+                    shortLevel = "DBG";
+                    break;
+                case LogLevel.Information:
+                    shortLevel = "INF";
+                    break;
+                case LogLevel.Warning:
+                    shortLevel = "WRN";
+                    break;
+                case LogLevel.Error:
+                    shortLevel = "ERR";
+                    break;
+                case LogLevel.Critical:
+                    shortLevel = "CRT";
+                    break;
+                case LogLevel.None:
+                    shortLevel = "---";
+                    break;
+                default:
+                    shortLevel = "INF";
+                    break;
+            }
+
+            _textBox.Invoke(new Action(() => _textBox.AppendText($"[{DateTime.Now:yyy-MM-ff HH:mm:ss}][{shortLevel}] {message}{Environment.NewLine}")));
         }
     }
 }
