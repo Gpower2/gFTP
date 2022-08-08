@@ -13,6 +13,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using gFtp;
 using gpower2.gSettings;
+using Microsoft.Extensions.Logging;
 
 #pragma warning disable IDE1006 // Naming Styles
 namespace gFtpGUI
@@ -20,6 +21,7 @@ namespace gFtpGUI
     public partial class frmMain : Form
     {
         private readonly Settings _settings = new Settings();
+        private readonly ILogger _logger;
 
         private gFTP _ftp = null;
         private frmQueue _FrmQueue = null;
@@ -28,6 +30,7 @@ namespace gFtpGUI
         {
             InitializeComponent();
 
+            _logger = new TextBoxLogger(txtLog);
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
             trvFtpFolders.ImageList = new ImageList();
@@ -124,7 +127,7 @@ namespace gFtpGUI
                 grpFtpFiles.Enabled = false;
                 grpFtpFiles.Cursor = Cursors.WaitCursor;
 
-                _ftp = new gFTP(txtFtpServer.Text, txtUsername.Text, txtPassword.Text);
+                _ftp = new gFTP(txtFtpServer.Text, txtUsername.Text, txtPassword.Text, _logger);
                 FtpFolder f = await _ftp.GetFtpFolderDetailsAsync("", 0);
                 FillFtpDirectoryTree(f);
 
@@ -722,7 +725,7 @@ namespace gFtpGUI
                 {
                     if (f.Type != "Directory")
                     {
-                        await _ftp.DeleteRemoteFile(UrlHelper.Combine(txtFtpPath.Text, f.Name));
+                        await _ftp.DeleteRemoteFileAsync(UrlHelper.Combine(txtFtpPath.Text, f.Name));
                     }
                     else
                     {
@@ -767,7 +770,7 @@ namespace gFtpGUI
             // Delete all the files in the folder
             foreach (FtpFile file in argFolder.Files)
             {
-                await _ftp.DeleteRemoteFile(UrlHelper.Combine(argFolder.FullPath, file.Name));
+                await _ftp.DeleteRemoteFileAsync(UrlHelper.Combine(argFolder.FullPath, file.Name));
             }            
 
             // Delete all the sub folders
@@ -780,7 +783,7 @@ namespace gFtpGUI
             }
 
             // Delete the folder
-            await _ftp.DeleteRemoteFolder(argFolder.FullPath);
+            await _ftp.DeleteRemoteFolderAsync(argFolder.FullPath);
         }
 
 

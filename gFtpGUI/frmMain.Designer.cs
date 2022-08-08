@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFtpServer = new System.Windows.Forms.TextBox();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -66,18 +66,18 @@
             this.txtLog = new System.Windows.Forms.TextBox();
             this.btnDownload = new System.Windows.Forms.Button();
             this.grpFtpServer = new System.Windows.Forms.GroupBox();
+            this.btnDeleteFtpConnection = new System.Windows.Forms.Button();
             this.btnSaveFtpConnection = new System.Windows.Forms.Button();
             this.cmbFtpConnections = new gpower2.gControls.gComboBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.spltFiles = new System.Windows.Forms.SplitContainer();
             this.grpActions = new System.Windows.Forms.GroupBox();
+            this.btnDeleteRemoteFile = new System.Windows.Forms.Button();
             this.btnJobs = new System.Windows.Forms.Button();
             this.btnSaveAriaPath = new System.Windows.Forms.Button();
             this.btnBrowseAria = new System.Windows.Forms.Button();
             this.lblAria = new System.Windows.Forms.Label();
             this.txtAria = new System.Windows.Forms.TextBox();
-            this.btnDeleteFtpConnection = new System.Windows.Forms.Button();
-            this.btnDeleteRemoteFile = new System.Windows.Forms.Button();
             this.grpFtpFiles.SuspendLayout();
             this.tlpFtpContents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spltFtp)).BeginInit();
@@ -223,11 +223,11 @@
             this.grdFtpFiles.AllowUserToDeleteRows = false;
             this.grdFtpFiles.AllowUserToOrderColumns = true;
             this.grdFtpFiles.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.grdFtpFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.grdFtpFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.grdFtpFiles.AutoSelectFirstRowOnDataSourceChange = false;
             this.grdFtpFiles.BackgroundColor = System.Drawing.SystemColors.Window;
             this.grdFtpFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -246,14 +246,14 @@
             this.grdFtpFiles.CustomRowForeColor = System.Drawing.Color.Black;
             this.grdFtpFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
             this.grdFtpFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.grdFtpFiles.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.grdFtpFiles.DefaultCellStyle = dataGridViewCellStyle2;
             this.grdFtpFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdFtpFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.grdFtpFiles.GridColor = System.Drawing.Color.Gainsboro;
@@ -261,6 +261,7 @@
             this.grdFtpFiles.LastClickedColumnIndex = -1;
             this.grdFtpFiles.LastClickedRowIndex = -1;
             this.grdFtpFiles.Location = new System.Drawing.Point(0, 0);
+            this.grdFtpFiles.MultiSelect = false;
             this.grdFtpFiles.Name = "grdFtpFiles";
             this.grdFtpFiles.ReadOnly = true;
             this.grdFtpFiles.RowHeadersVisible = false;
@@ -373,11 +374,11 @@
             this.grdLocalFiles.AllowUserToDeleteRows = false;
             this.grdLocalFiles.AllowUserToOrderColumns = true;
             this.grdLocalFiles.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.grdLocalFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.grdLocalFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.grdLocalFiles.AutoSelectFirstRowOnDataSourceChange = false;
             this.grdLocalFiles.BackgroundColor = System.Drawing.SystemColors.Window;
             this.grdLocalFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -396,14 +397,14 @@
             this.grdLocalFiles.CustomRowForeColor = System.Drawing.Color.Black;
             this.grdLocalFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
             this.grdLocalFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.grdLocalFiles.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.grdLocalFiles.DefaultCellStyle = dataGridViewCellStyle4;
             this.grdLocalFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdLocalFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.grdLocalFiles.GridColor = System.Drawing.Color.Gainsboro;
@@ -519,10 +520,12 @@
             // 
             this.txtLog.BackColor = System.Drawing.SystemColors.Window;
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLog.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.txtLog.Location = new System.Drawing.Point(3, 19);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtLog.Size = new System.Drawing.Size(1259, 72);
             this.txtLog.TabIndex = 0;
             // 
@@ -555,6 +558,17 @@
             this.grpFtpServer.TabIndex = 15;
             this.grpFtpServer.TabStop = false;
             this.grpFtpServer.Text = "FTP Details";
+            // 
+            // btnDeleteFtpConnection
+            // 
+            this.btnDeleteFtpConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDeleteFtpConnection.Location = new System.Drawing.Point(1182, 16);
+            this.btnDeleteFtpConnection.Name = "btnDeleteFtpConnection";
+            this.btnDeleteFtpConnection.Size = new System.Drawing.Size(76, 30);
+            this.btnDeleteFtpConnection.TabIndex = 9;
+            this.btnDeleteFtpConnection.Text = "Delete";
+            this.btnDeleteFtpConnection.UseVisualStyleBackColor = true;
+            this.btnDeleteFtpConnection.Click += new System.EventHandler(this.btnDeleteFtpConnection_Click);
             // 
             // btnSaveFtpConnection
             // 
@@ -635,6 +649,16 @@
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
             // 
+            // btnDeleteRemoteFile
+            // 
+            this.btnDeleteRemoteFile.Location = new System.Drawing.Point(212, 19);
+            this.btnDeleteRemoteFile.Name = "btnDeleteRemoteFile";
+            this.btnDeleteRemoteFile.Size = new System.Drawing.Size(76, 29);
+            this.btnDeleteRemoteFile.TabIndex = 20;
+            this.btnDeleteRemoteFile.Text = "Delete";
+            this.btnDeleteRemoteFile.UseVisualStyleBackColor = true;
+            this.btnDeleteRemoteFile.Click += new System.EventHandler(this.btnDeleteRemoteFile_Click);
+            // 
             // btnJobs
             // 
             this.btnJobs.Location = new System.Drawing.Point(134, 19);
@@ -689,27 +713,6 @@
             this.txtAria.TabIndex = 15;
             this.txtAria.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtAria_DragDrop);
             this.txtAria.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtAria_DragEnter);
-            // 
-            // btnDeleteFtpConnection
-            // 
-            this.btnDeleteFtpConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeleteFtpConnection.Location = new System.Drawing.Point(1182, 16);
-            this.btnDeleteFtpConnection.Name = "btnDeleteFtpConnection";
-            this.btnDeleteFtpConnection.Size = new System.Drawing.Size(76, 30);
-            this.btnDeleteFtpConnection.TabIndex = 9;
-            this.btnDeleteFtpConnection.Text = "Delete";
-            this.btnDeleteFtpConnection.UseVisualStyleBackColor = true;
-            this.btnDeleteFtpConnection.Click += new System.EventHandler(this.btnDeleteFtpConnection_Click);
-            // 
-            // btnDeleteRemoteFile
-            // 
-            this.btnDeleteRemoteFile.Location = new System.Drawing.Point(212, 19);
-            this.btnDeleteRemoteFile.Name = "btnDeleteRemoteFile";
-            this.btnDeleteRemoteFile.Size = new System.Drawing.Size(76, 29);
-            this.btnDeleteRemoteFile.TabIndex = 20;
-            this.btnDeleteRemoteFile.Text = "Delete";
-            this.btnDeleteRemoteFile.UseVisualStyleBackColor = true;
-            this.btnDeleteRemoteFile.Click += new System.EventHandler(this.btnDeleteRemoteFile_Click);
             // 
             // frmMain
             // 

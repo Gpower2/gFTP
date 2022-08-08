@@ -6,12 +6,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace gFtp
 {
     public class gFTP
     {
-
         private string _FtpDomain = "";
 
         public String FtpDomain 
@@ -36,9 +37,11 @@ namespace gFtp
         public String FtpUsername { get; set; } = "";
         public String FtpPassword { get; set; } = "";
 
-        public gFTP() { }
+        private readonly ILogger _logger;
 
-        public gFTP(String argFtpServer, String argUser, String argPassword)
+        public gFTP() { _logger = NullLogger.Instance; }
+
+        public gFTP(String argFtpServer, String argUser, String argPassword, ILogger logger = null)
         {
             FtpDomain = argFtpServer;
             if (!FtpDomain.StartsWith("ftp://"))
@@ -47,6 +50,8 @@ namespace gFtp
             }
             FtpUsername = argUser;
             FtpPassword = argPassword;
+
+            _logger = logger ?? NullLogger.Instance;
         }
 
         private FtpWebRequest GetFtpWebRequest(String argDirectory)
@@ -62,7 +67,7 @@ namespace gFtp
             return request;
         }
 
-        public async Task DeleteRemoteFile(string argFile)
+        public async Task DeleteRemoteFileAsync(string argFile)
         {
             argFile = argFile.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFile));
@@ -74,9 +79,12 @@ namespace gFtp
 
             request.Method = WebRequestMethods.Ftp.DeleteFile;
 
+            _logger.LogDebug($"Try delete file: {argFile}");
+
             using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
             {
-                Debug.WriteLine($"Delete command Complete, status: '{response.StatusDescription}'");
+                _logger.LogDebug($"Delete command Complete, status: '{response.StatusDescription.Trim()}'");
+                Debug.WriteLine($"Delete command Complete, status: '{response.StatusDescription.Trim()}'");
                 
                 if (!response.StatusDescription.StartsWith("250"))
                 {
@@ -85,7 +93,7 @@ namespace gFtp
             }
         }
 
-        public async Task DeleteRemoteFolder(string argFolder)
+        public async Task DeleteRemoteFolderAsync(string argFolder)
         {
             argFolder = argFolder.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFolder));
@@ -97,9 +105,12 @@ namespace gFtp
 
             request.Method = WebRequestMethods.Ftp.RemoveDirectory;
 
+            _logger.LogDebug($"Try delete directory: {argFolder}");
+
             using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
             {
-                Debug.WriteLine($"Remove directory command Complete, status: '{response.StatusDescription}'");
+                Debug.WriteLine($"Remove directory command Complete, status: '{response.StatusDescription.Trim()}'");
+                _logger.LogDebug($"Remove directory command Complete, status: '{response.StatusDescription.Trim()}'");
 
                 if (!response.StatusDescription.StartsWith("250"))
                 {
@@ -117,12 +128,14 @@ namespace gFtp
             String contents = "";
             using (FtpWebResponse response = (FtpWebResponse)(await request.GetResponseAsync()))
             {
-                Debug.WriteLine($"Directory {argPath} List Complete, status: '{response.StatusDescription}'");
+                _logger.LogDebug($"Directory {argPath} List Complete, status: '{response.StatusDescription.Trim()}'");
+                Debug.WriteLine($"Directory {argPath} List Complete, status: '{response.StatusDescription.Trim()}'");
 
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
                     contents = await reader.ReadToEndAsync();
 
+                    _logger.LogDebug(contents);
                     Debug.WriteLine(contents);
                 }
             }
