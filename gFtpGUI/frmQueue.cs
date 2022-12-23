@@ -36,7 +36,7 @@ namespace gFtpGUI
             try
             {
                 string queueFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gFtpQueue.json");
-                if (File.Exists(queueFile))
+                if (await Task.Run(() => File.Exists(queueFile)))
                 {
                     using (StreamReader sr = new StreamReader(queueFile))
                     {
@@ -316,7 +316,7 @@ namespace gFtpGUI
             {
                 foreach (QueueItem q in grdQueue.DataSource as IList<QueueItem>)
                 {
-                    if(q.State == JobState.Pending)
+                    if (q.State == JobState.Pending)
                     {
                         q.State = JobState.Waiting;
                         q.EndTime = null;
@@ -369,15 +369,25 @@ namespace gFtpGUI
         {
             try
             {
-                if (grdQueue.SelectedItems.Count > 0)
+                if (grdQueue.SelectedItems.Count == 0)
                 {
-                    foreach (var item in grdQueue.SelectedItems)
-                    {
-                        (grdQueue.DataSource as IList<QueueItem>).Remove(item as QueueItem);
-                    }
-                    grdQueue.Refresh();
-                    await SaveQueueAsync();
+                    return;
                 }
+
+                var answer = MessageBox.Show("Are you sure you want to remove the selected items?", "Are you sure?",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (answer == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                foreach (var item in grdQueue.SelectedItems)
+                {
+                    (grdQueue.DataSource as IList<QueueItem>).Remove(item as QueueItem);
+                }
+
+                grdQueue.Refresh();
+                await SaveQueueAsync();
             }
             catch (Exception ex)
             {
@@ -394,28 +404,38 @@ namespace gFtpGUI
             e.Cancel = true;
         }
 
-        private void btnOpenFolder_Click(object sender, EventArgs e)
+        private async void btnOpenFolder_Click(object sender, EventArgs e)
         {
             try
             {
-                if(grdQueue.SelectedItem == null)
+                if (grdQueue.SelectedItem == null)
                 {
                     return;
                 }
-                if (Directory.Exists((grdQueue.SelectedItem as QueueItem).Job.LocalPath))
+
+                this.Cursor = Cursors.WaitCursor;
+
+                if (await Task.Run(() => Directory.Exists((grdQueue.SelectedItem as QueueItem).Job.LocalPath)))
                 {
-                    if (File.Exists(Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)))
+                    if (await Task.Run(() => File.Exists(Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename))))
                     {
-                        Process.Start("explorer.exe", String.Format("/select, \"{0}\"", Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)));
+                        await Task.Run(() =>
+                            Process.Start("explorer.exe", String.Format("/select, \"{0}\"", Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)))
+                        );
                     }
                     else
                     {
-                        Process.Start("explorer.exe", (grdQueue.SelectedItem as QueueItem).Job.LocalPath);
+                        await Task.Run(() =>
+                            Process.Start("explorer.exe", (grdQueue.SelectedItem as QueueItem).Job.LocalPath)
+                        );
                     }                        
                 }
+
+                this.Cursor = Cursors.Default;
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 Debug.WriteLine(ex);
                 grdQueue.Refresh();
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -430,6 +450,7 @@ namespace gFtpGUI
                 {
                     return;
                 }
+
                 foreach (QueueItem item in grdQueue.SelectedItems)
                 {
                     if (item.State == JobState.Failed)
@@ -473,9 +494,22 @@ namespace gFtpGUI
         {
             try
             {
-                while ((grdQueue.DataSource as IList<QueueItem>).Any(q => q.State == JobState.Completed))
+                IList<QueueItem> items = grdQueue.DataSource as IList<QueueItem>;
+                if (!items.Any(q => q.State == JobState.Completed))
                 {
-                    (grdQueue.DataSource as IList<QueueItem>).Remove((grdQueue.DataSource as IList<QueueItem>).FirstOrDefault(q => q.State == JobState.Completed));
+                    return;
+                }
+                
+                var answer = MessageBox.Show("Are you sure you want to remove ALL completed items?", "Are you sure?", 
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (answer == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                while (items.Any(q => q.State == JobState.Completed))
+                {
+                    items.Remove((grdQueue.DataSource as IList<QueueItem>).FirstOrDefault(q => q.State == JobState.Completed));
                 }
                 grdQueue.Refresh();
                 await SaveQueueAsync();
@@ -493,6 +527,13 @@ namespace gFtpGUI
         {
             try
             {
+                var answer = MessageBox.Show("Are you sure you want to remove ALL items?", "Are you sure?",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (answer == DialogResult.Cancel)
+                {
+                    return;
+                }
+
                 (grdQueue.DataSource as IList<QueueItem>).Clear();
                 grdQueue.Refresh();
                 await SaveQueueAsync();
@@ -514,6 +555,7 @@ namespace gFtpGUI
                 {
                     return;
                 }
+
                 IList<QueueItem> list = (grdQueue.DataSource as IList<QueueItem>);
                 IList<QueueItem> selection = (grdQueue.SelectedItems as IList).Cast<QueueItem>().OrderBy(t => t.Order).ToList();
                 foreach (QueueItem item in selection)
@@ -619,33 +661,35 @@ namespace gFtpGUI
             }
         }
 
-        private void grdQueue_MouseDoubleClick(object sender, MouseEventArgs e)
+        private async void grdQueue_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             try
             {
-                OpenFile();
+                await OpenFileAsync();
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 Debug.WriteLine(ex);
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnOpenFile_Click(object sender, EventArgs e)
+        private async void btnOpenFile_Click(object sender, EventArgs e)
         {
             try
             {
-                OpenFile();
+                await OpenFileAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                this.Cursor = Cursors.Default;
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void OpenFile()
+        private async Task OpenFileAsync()
         {
             if (grdQueue.SelectedIndex == -1)
             {
@@ -656,10 +700,15 @@ namespace gFtpGUI
                 return;
             }
             QueueItem q = grdQueue.SelectedItem as QueueItem;
-            if (File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
+
+            this.Cursor = Cursors.WaitCursor;
+
+            if (await Task.Run(() => File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
             {
-                Task.Run(() => Process.Start(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)));
+                await Task.Run(() => Process.Start(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)));
             }
+
+            this.Cursor = Cursors.Default;
         }
 
         private async void btnRemoveDeleted_Click(object sender, EventArgs e)
@@ -668,17 +717,52 @@ namespace gFtpGUI
             {
                 var queue = (grdQueue.DataSource as IList<QueueItem>);
 
-                while (queue.Any(q => q.State == JobState.Completed && !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
+                if (!queue.Any(q => q.State == JobState.Completed))
                 {
-                    queue.Remove(
-                        queue.FirstOrDefault(q => q.State == JobState.Completed && !File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
-                    );
+                    return;
                 }
+
+                var answer = MessageBox.Show("Are you sure you want to remove ALL deleted items?", "Are you sure?",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (answer == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                long totalFilesRemoved = 0;
+                while (queue.Any(q => q.State == JobState.Completed))
+                {
+                    bool removeOccured = false;
+                    for (int i = 0; i < queue.Count; i++)
+                    {
+                        var q = queue[i];
+                        if (!await Task.Run(() => File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
+                        {
+                            queue.RemoveAt(i);
+                            removeOccured = true;
+                            totalFilesRemoved++;
+                            // An elemet was removed, restart the check from the beginning
+                            break;
+                        }
+                    }
+
+                    // If no removal has occured, break the while
+                    if (!removeOccured)
+                    {
+                        break;
+                    }
+                }
+
                 grdQueue.Refresh();
                 await SaveQueueAsync();
+                this.Cursor = Cursors.Default;
+                MessageBox.Show($"{totalFilesRemoved} deleted file(s) were removed!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 Debug.WriteLine(ex);
                 grdQueue.Refresh();
                 await SaveQueueAsync();
