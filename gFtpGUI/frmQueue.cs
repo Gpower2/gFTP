@@ -23,6 +23,7 @@ namespace gFtpGUI
         public frmQueue()
         {
             InitializeComponent();
+            this.UseImmersiveDarkMode(true);
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 

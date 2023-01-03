@@ -29,6 +29,7 @@ namespace gFtpGUI
         public frmMain()
         {
             InitializeComponent();
+            this.UseImmersiveDarkMode(true);
 
             _logger = new TextBoxLogger(txtLog);
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
