@@ -27,21 +27,21 @@ namespace gFtpGUI
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
-            Task.Run(() => LoadQueueAsync()).Wait();
+            LoadQueue();
                 
             grdQueue.MultiSelect = true;
         }
 
-        private async Task LoadQueueAsync()
+        private void LoadQueue()
         {
             try
             {
                 string queueFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gFtpQueue.json");
-                if (await Task.Run(() => File.Exists(queueFile)))
+                if (File.Exists(queueFile))
                 {
                     using (StreamReader sr = new StreamReader(queueFile))
                     {
-                        var jsonQueue = JsonConvert.DeserializeObject<IList<QueueItem>>(await sr.ReadToEndAsync());
+                        var jsonQueue = JsonConvert.DeserializeObject<IList<QueueItem>>(sr.ReadToEnd());
 
                         grdQueue.DataSource = jsonQueue;
                     }
@@ -416,19 +416,17 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                if (await Task.Run(() => Directory.Exists((grdQueue.SelectedItem as QueueItem).Job.LocalPath)))
+                if (await DirectoryAsync.ExistsAsync((grdQueue.SelectedItem as QueueItem).Job.LocalPath))
                 {
-                    if (await Task.Run(() => File.Exists(Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename))))
+                    if (await FileAsync.ExistsAsync(Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)))
                     {
-                        await Task.Run(() =>
-                            Process.Start("explorer.exe", String.Format("/select, \"{0}\"", Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)))
-                        );
+                        await ProcessAsync.StartAsync(
+                            "explorer.exe", 
+                            String.Format("/select, \"{0}\"", Path.Combine((grdQueue.SelectedItem as QueueItem).Job.LocalPath, (grdQueue.SelectedItem as QueueItem).Job.LocalFilename)));
                     }
                     else
                     {
-                        await Task.Run(() =>
-                            Process.Start("explorer.exe", (grdQueue.SelectedItem as QueueItem).Job.LocalPath)
-                        );
+                        await ProcessAsync.StartAsync("explorer.exe", (grdQueue.SelectedItem as QueueItem).Job.LocalPath);
                     }                        
                 }
 
@@ -704,9 +702,9 @@ namespace gFtpGUI
 
             this.Cursor = Cursors.WaitCursor;
 
-            if (await Task.Run(() => File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
+            if (await FileAsync.ExistsAsync(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
             {
-                await Task.Run(() => Process.Start(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)));
+                await ProcessAsync.StartAsync(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename));
             }
 
             this.Cursor = Cursors.Default;
@@ -739,7 +737,7 @@ namespace gFtpGUI
                     for (int i = 0; i < queue.Count; i++)
                     {
                         var q = queue[i];
-                        if (!await Task.Run(() => File.Exists(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename))))
+                        if (!await FileAsync.ExistsAsync(Path.Combine(q.Job.LocalPath, q.Job.LocalFilename)))
                         {
                             queue.RemoveAt(i);
                             removeOccured = true;

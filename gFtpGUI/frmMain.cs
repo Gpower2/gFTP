@@ -526,7 +526,7 @@ namespace gFtpGUI
                 DirectoryInfo[] subDirs = null;
                 try
                 {
-                    subDirs = await Task.Run(() => (nodeToAddTo.Tag as DirectoryInfo).GetDirectories());
+                    subDirs = await (nodeToAddTo.Tag as DirectoryInfo).GetDirectoriesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -871,9 +871,9 @@ namespace gFtpGUI
         {
             // Make all the necessary local folders
             String localDestFolder = Path.Combine(argLocalRoot, argFolder.Name);
-            if (!Directory.Exists(localDestFolder))
+            if (!await DirectoryAsync.ExistsAsync(localDestFolder))
             {
-                Directory.CreateDirectory(localDestFolder);
+                await DirectoryAsync.CreateDirectoryAsync(localDestFolder);
             }
             List<Job> jobs = new List<gFtpGUI.Job>();
             foreach (FtpFile file in argFolder.Files.OrderBy(f => f.Name))
@@ -943,7 +943,7 @@ namespace gFtpGUI
             }
         }
 
-        private void grdLocalFiles_DoubleClick(object sender, EventArgs e)
+        private async void grdLocalFiles_DoubleClick(object sender, EventArgs e)
         {
             try
             {
@@ -977,7 +977,7 @@ namespace gFtpGUI
                 }
                 else
                 {
-                    Process.Start(Path.Combine(txtLocalPath.Text, (grdLocalFiles.SelectedItem as FileItem).Name));
+                    await ProcessAsync.StartAsync(Path.Combine(txtLocalPath.Text, (grdLocalFiles.SelectedItem as FileItem).Name));
                 }
             }
             catch (Exception ex)
@@ -1374,11 +1374,9 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                if (await Task.Run(() => Directory.Exists(localPath)))
+                if (await DirectoryAsync.ExistsAsync(localPath))
                 {
-                    await Task.Run(() =>
-                        Process.Start("explorer.exe", localPath)
-                    );
+                    await ProcessAsync.StartAsync("explorer.exe", localPath);
                 }
 
                 this.Cursor = Cursors.Default;
@@ -1404,7 +1402,7 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                if (!await Task.Run(() => Directory.Exists(localPath)))
+                if (!await DirectoryAsync.ExistsAsync(localPath))
                 {
                     this.Cursor = Cursors.Default;
                     return;
@@ -1422,12 +1420,12 @@ namespace gFtpGUI
 
                 string finalPath = Path.Combine(localPath, subFolder);
 
-                if (await Task.Run(() => Directory.Exists(finalPath)))
+                if (await DirectoryAsync.ExistsAsync(finalPath))
                 {
                     throw new Exception($"The final path {finalPath} already exists!");
                 }
 
-                DirectoryInfo finalDirInfo = await Task.Run(() => Directory.CreateDirectory(finalPath));
+                DirectoryInfo finalDirInfo = await DirectoryAsync.CreateDirectoryAsync(finalPath);
 
                 if (finalDirInfo == null)
                 {
@@ -1470,7 +1468,7 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                if (!await Task.Run(() => Directory.Exists(localPath)))
+                if (!await DirectoryAsync.ExistsAsync(localPath))
                 {
                     this.Cursor = Cursors.Default;
                     return;
@@ -1491,7 +1489,7 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                await Task.Run(() => Directory.Delete(localPath));
+                await DirectoryAsync.DeleteAsync(localPath);
                 
                 trvLocalFolders.SelectedNode = trvLocalFolders.SelectedNode.Parent;
 
@@ -1520,7 +1518,7 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                if (!await Task.Run(() => Directory.Exists(localPath)))
+                if (!await DirectoryAsync.ExistsAsync(localPath))
                 {
                     this.Cursor = Cursors.Default;
                     return;
@@ -1536,16 +1534,16 @@ namespace gFtpGUI
 
                 this.Cursor = Cursors.WaitCursor;
 
-                string parentFolder = await (Task.Run(() => Directory.GetParent(localPath).FullName));
+                string parentFolder = (await DirectoryAsync.GetParentAsync(localPath)).FullName;
 
                 string finalPath = Path.Combine(parentFolder, newFolderName);
 
-                if (await Task.Run(() => Directory.Exists(finalPath)))
+                if (await DirectoryAsync.ExistsAsync(finalPath))
                 {
                     throw new Exception($"The final path {finalPath} already exists!");
                 }
 
-                await Task.Run(() => Directory.Move(localPath, finalPath));
+                await DirectoryAsync.MoveAsync(localPath, finalPath);
 
                 trvLocalFolders.SelectedNode = trvLocalFolders.SelectedNode.Parent;
 
