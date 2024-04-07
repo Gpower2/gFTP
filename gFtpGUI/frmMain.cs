@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using gFtp;
+using gpower2.gControls;
 using gpower2.gSettings;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +22,7 @@ namespace gFtpGUI
     public partial class frmMain : Form
     {
         private readonly Settings _settings = new Settings();
+        private readonly ToolTip _tooltip = new ToolTip();
         private readonly ILogger _logger;
 
         private gFTP _ftp = null;
@@ -51,6 +53,14 @@ namespace gFtpGUI
             InitSettings();
 
             grdFtpFiles.MultiSelect = true;
+
+            _tooltip.SetToolTip(btnLocalPathCreate, "Create a new local sub folder");
+            _tooltip.SetToolTip(btnLocalPathDelete, "Delete the selected local folder");
+            _tooltip.SetToolTip(btnLocalPathRename, "Rename the selected local folder");
+            _tooltip.SetToolTip(btnLocalPathOpen, "Open the selected local folder in file explorer");
+
+            _tooltip.SetToolTip(btnRefreshFtpPath, "Refresh the current FTP path");
+            _tooltip.SetToolTip(btnRefreshLocalPath, "Refresh the current local path");
         }
 
         private void frmMain_Shown(object sender, EventArgs e)
@@ -314,7 +324,7 @@ namespace gFtpGUI
                     {
                         txtLocalDriveInfo.Text = String.Format("[{0}] | Size {1} | Free space {2}", selDrive.VolumeLabel, SizeHelper.GetSize(selDrive.TotalSize), SizeHelper.GetSize(selDrive.TotalFreeSpace));
                         txtLocalPath.Text = selDrive.RootDirectory.FullName;
-                        await FillLocalDirectoryTree(selDrive.RootDirectory);
+                        await FillLocalDirectoryTreeAsync(selDrive.RootDirectory);
                     }
                     else
                     {
@@ -364,7 +374,7 @@ namespace gFtpGUI
                 TreeNode selNode = trvLocalFolders.SelectedNode;
                 DirectoryInfo selDirInfo = selNode.Tag as DirectoryInfo;
                 txtLocalPath.Text = selDirInfo.FullName;
-                await GetDirectories(selNode, 1);
+                await GetDirectoriesAsync(selNode, 1);
 
                 // Read the contents and add them to the ListView
                 // Keep the sorted column and order
@@ -489,7 +499,7 @@ namespace gFtpGUI
             }
         }
 
-        private async Task FillLocalDirectoryTree(DirectoryInfo argInfo)
+        private async Task FillLocalDirectoryTreeAsync(DirectoryInfo argInfo)
         {
             TreeNode rootNode = new TreeNode(argInfo.Name)
             {
@@ -498,7 +508,7 @@ namespace gFtpGUI
                 SelectedImageKey = "folder_open"
             };
 
-            await GetDirectories(rootNode, 1);
+            await GetDirectoriesAsync(rootNode, 1);
             
             // First clear nodes
             trvLocalFolders.Nodes.Clear();
@@ -507,7 +517,7 @@ namespace gFtpGUI
             trvLocalFolders.Nodes.Add(rootNode);
         }
 
-        private async Task GetDirectories(TreeNode nodeToAddTo, Int32 argLevel)
+        private async Task GetDirectoriesAsync(TreeNode nodeToAddTo, Int32 argLevel)
         {
             if (argLevel > 0)
             {
@@ -532,7 +542,7 @@ namespace gFtpGUI
                             ImageKey = "folder",
                             SelectedImageKey = "folder_open"
                         };
-                        await GetDirectories(aNode, argLevel - 1);
+                        await GetDirectoriesAsync(aNode, argLevel - 1);
                         nodeToAddTo.Nodes.Add(aNode);
                     }
                 }
@@ -551,7 +561,7 @@ namespace gFtpGUI
                 TreeNode selNode = e.Node;
                 DirectoryInfo selDirInfo = selNode.Tag as DirectoryInfo;
                 txtLocalPath.Text = selDirInfo.FullName;
-                await GetDirectories(selNode, 1);
+                await GetDirectoriesAsync(selNode, 1);
 
                 // Read the contents and add them to the ListView
                 // First clear the list view contents
@@ -979,18 +989,18 @@ namespace gFtpGUI
 
         private TreeNode FindLocalNode(TreeNode argNode, String argPath)
         {
-            if( (argNode.Tag as DirectoryInfo).FullName == argPath)
+            if ((argNode.Tag as DirectoryInfo).FullName == argPath)
             {
                 return argNode;
             }
             else
             {
-                if(argNode.Nodes.Count > 0)
+                if (argNode.Nodes.Count > 0)
                 {
                     foreach (TreeNode node in argNode.Nodes)
                     {
                         TreeNode selNode = FindLocalNode(node, argPath);
-                        if(selNode != null)
+                        if (selNode != null)
                         {
                             return selNode;
                         }
@@ -1347,6 +1357,217 @@ namespace gFtpGUI
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btnLocalPathOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string localPath = txtLocalPath.Text;
+
+                if (string.IsNullOrWhiteSpace(localPath))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                if (await Task.Run(() => Directory.Exists(localPath)))
+                {
+                    await Task.Run(() =>
+                        Process.Start("explorer.exe", localPath)
+                    );
+                }
+
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                this.Cursor = Cursors.Default;
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btnLocalPathCreate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string localPath = txtLocalPath.Text;
+
+                if (string.IsNullOrWhiteSpace(localPath))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                if (!await Task.Run(() => Directory.Exists(localPath)))
+                {
+                    this.Cursor = Cursors.Default;
+                    return;
+                }
+
+                this.Cursor = Cursors.Default;
+
+                string subFolder = gInputForm.InputBox($"Please write the sub folder name for {localPath}:", "Create a new sub folder", multiLineText: false);
+                if (string.IsNullOrWhiteSpace(subFolder))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                string finalPath = Path.Combine(localPath, subFolder);
+
+                if (await Task.Run(() => Directory.Exists(finalPath)))
+                {
+                    throw new Exception($"The final path {finalPath} already exists!");
+                }
+
+                DirectoryInfo finalDirInfo = await Task.Run(() => Directory.CreateDirectory(finalPath));
+
+                if (finalDirInfo == null)
+                {
+                    throw new Exception($"The final path {finalPath} could not be created!");
+                }
+
+                btnRefreshLocalPath_Click(sender, e);
+
+                TreeNode finalNode = FindLocalNode(trvLocalFolders.SelectedNode, finalPath);
+                while (finalNode == null)
+                {
+                    Application.DoEvents();
+                    finalNode = FindLocalNode(trvLocalFolders.SelectedNode, finalPath);
+                }
+
+                trvLocalFolders.SelectedNode = finalNode;
+
+                MessageBox.Show($"{finalPath} was created!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                this.Cursor = Cursors.Default;
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btnLocalPathDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string localPath = txtLocalPath.Text;
+
+                if (string.IsNullOrWhiteSpace(localPath))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                if (!await Task.Run(() => Directory.Exists(localPath)))
+                {
+                    this.Cursor = Cursors.Default;
+                    return;
+                }
+
+                this.Cursor = Cursors.Default;
+
+                DialogResult result = MessageBox.Show($"Do you really want to delete folder: {localPath}?", "Confirmation", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                switch (result)                 
+                { 
+                    case DialogResult.No:
+                    case DialogResult.Cancel:
+                        return;
+                    case DialogResult.Yes:
+                        break;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                await Task.Run(() => Directory.Delete(localPath));
+                
+                trvLocalFolders.SelectedNode = trvLocalFolders.SelectedNode.Parent;
+
+                MessageBox.Show($"{localPath} was deleted!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                this.Cursor = Cursors.Default;
+                MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btnLocalPathRename_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string localPath = txtLocalPath.Text;
+
+                if (string.IsNullOrWhiteSpace(localPath))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                if (!await Task.Run(() => Directory.Exists(localPath)))
+                {
+                    this.Cursor = Cursors.Default;
+                    return;
+                }
+
+                this.Cursor = Cursors.Default;
+
+                string newFolderName = gInputForm.InputBox($"Please write the new folder name for {localPath}:", "Rename an existing folder", multiLineText: false);
+                if (string.IsNullOrWhiteSpace(newFolderName))
+                {
+                    return;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+
+                string parentFolder = await (Task.Run(() => Directory.GetParent(localPath).FullName));
+
+                string finalPath = Path.Combine(parentFolder, newFolderName);
+
+                if (await Task.Run(() => Directory.Exists(finalPath)))
+                {
+                    throw new Exception($"The final path {finalPath} already exists!");
+                }
+
+                await Task.Run(() => Directory.Move(localPath, finalPath));
+
+                trvLocalFolders.SelectedNode = trvLocalFolders.SelectedNode.Parent;
+
+                btnRefreshLocalPath_Click(sender, e);
+
+                TreeNode finalNode = FindLocalNode(trvLocalFolders.SelectedNode, finalPath);
+                while (finalNode == null)
+                {
+                    Application.DoEvents();
+                    finalNode = FindLocalNode(trvLocalFolders.SelectedNode, finalPath);
+                }
+
+                trvLocalFolders.SelectedNode = finalNode;
+
+                MessageBox.Show($"{localPath} was renamed to {finalPath}!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                this.Cursor = Cursors.Default;
                 MessageBox.Show(ex.Message, "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

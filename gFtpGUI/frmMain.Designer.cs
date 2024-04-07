@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFtpServer = new System.Windows.Forms.TextBox();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -44,7 +44,6 @@
             this.tlpFtpContents = new System.Windows.Forms.TableLayoutPanel();
             this.spltFtp = new System.Windows.Forms.SplitContainer();
             this.trvFtpFolders = new System.Windows.Forms.TreeView();
-            this.grdFtpFiles = new gpower2.gControls.gDataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
             this.btnRefreshFtpPath = new System.Windows.Forms.Button();
             this.txtFtpPath = new System.Windows.Forms.TextBox();
@@ -53,7 +52,6 @@
             this.tlpLocalContents = new System.Windows.Forms.TableLayoutPanel();
             this.spltLocal = new System.Windows.Forms.SplitContainer();
             this.trvLocalFolders = new System.Windows.Forms.TreeView();
-            this.grdLocalFiles = new gpower2.gControls.gDataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnRefreshLocalPath = new System.Windows.Forms.Button();
             this.txtLocalDriveInfo = new System.Windows.Forms.TextBox();
@@ -68,7 +66,6 @@
             this.grpFtpServer = new System.Windows.Forms.GroupBox();
             this.btnDeleteFtpConnection = new System.Windows.Forms.Button();
             this.btnSaveFtpConnection = new System.Windows.Forms.Button();
-            this.cmbFtpConnections = new gpower2.gControls.gComboBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.spltFiles = new System.Windows.Forms.SplitContainer();
             this.grpActions = new System.Windows.Forms.GroupBox();
@@ -78,13 +75,19 @@
             this.btnBrowseAria = new System.Windows.Forms.Button();
             this.lblAria = new System.Windows.Forms.Label();
             this.txtAria = new System.Windows.Forms.TextBox();
+            this.btnLocalPathOpen = new System.Windows.Forms.Button();
+            this.cmbFtpConnections = new gpower2.gControls.gComboBox();
+            this.grdFtpFiles = new gpower2.gControls.gDataGridView();
+            this.grdLocalFiles = new gpower2.gControls.gDataGridView();
+            this.btnLocalPathCreate = new System.Windows.Forms.Button();
+            this.btnLocalPathDelete = new System.Windows.Forms.Button();
+            this.btnLocalPathRename = new System.Windows.Forms.Button();
             this.grpFtpFiles.SuspendLayout();
             this.tlpFtpContents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spltFtp)).BeginInit();
             this.spltFtp.Panel1.SuspendLayout();
             this.spltFtp.Panel2.SuspendLayout();
             this.spltFtp.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.grdFtpFiles)).BeginInit();
             this.panel3.SuspendLayout();
             this.grpLocalFiles.SuspendLayout();
             this.tlpLocalContents.SuspendLayout();
@@ -92,7 +95,6 @@
             this.spltLocal.Panel1.SuspendLayout();
             this.spltLocal.Panel2.SuspendLayout();
             this.spltLocal.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.grdLocalFiles)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.grpLog.SuspendLayout();
@@ -103,6 +105,8 @@
             this.spltFiles.Panel2.SuspendLayout();
             this.spltFiles.SuspendLayout();
             this.grpActions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdFtpFiles)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdLocalFiles)).BeginInit();
             this.SuspendLayout();
             // 
             // txtFtpServer
@@ -217,60 +221,6 @@
             this.trvFtpFolders.TabIndex = 0;
             this.trvFtpFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trvFtpFolders_AfterSelect);
             // 
-            // grdFtpFiles
-            // 
-            this.grdFtpFiles.AllowUserToAddRows = false;
-            this.grdFtpFiles.AllowUserToDeleteRows = false;
-            this.grdFtpFiles.AllowUserToOrderColumns = true;
-            this.grdFtpFiles.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.grdFtpFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.grdFtpFiles.AutoSelectFirstRowOnDataSourceChange = false;
-            this.grdFtpFiles.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.grdFtpFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.grdFtpFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grdFtpFiles.CustomColumnAlignments = "";
-            this.grdFtpFiles.CustomColumnFormats = "";
-            this.grdFtpFiles.CustomColumnNames = "";
-            this.grdFtpFiles.CustomColumnSizes = "24";
-            this.grdFtpFiles.CustomColumnSums = "";
-            this.grdFtpFiles.CustomColumnWrapModes = "";
-            this.grdFtpFiles.CustomFooterRowBackgroundColor = System.Drawing.Color.White;
-            this.grdFtpFiles.CustomFooterRowForeColor = System.Drawing.Color.Black;
-            this.grdFtpFiles.CustomRowAlternativeBackgroundColor = System.Drawing.Color.WhiteSmoke;
-            this.grdFtpFiles.CustomRowAlternativeForeColor = System.Drawing.Color.Black;
-            this.grdFtpFiles.CustomRowBackgroundColor = System.Drawing.Color.White;
-            this.grdFtpFiles.CustomRowForeColor = System.Drawing.Color.Black;
-            this.grdFtpFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
-            this.grdFtpFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.grdFtpFiles.DefaultCellStyle = dataGridViewCellStyle2;
-            this.grdFtpFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdFtpFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.grdFtpFiles.GridColor = System.Drawing.Color.Gainsboro;
-            this.grdFtpFiles.KeyColumnIndex = -1;
-            this.grdFtpFiles.LastClickedColumnIndex = -1;
-            this.grdFtpFiles.LastClickedRowIndex = -1;
-            this.grdFtpFiles.Location = new System.Drawing.Point(0, 0);
-            this.grdFtpFiles.MultiSelect = false;
-            this.grdFtpFiles.Name = "grdFtpFiles";
-            this.grdFtpFiles.ReadOnly = true;
-            this.grdFtpFiles.RowHeadersVisible = false;
-            this.grdFtpFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdFtpFiles.ShowFooterRow = false;
-            this.grdFtpFiles.Size = new System.Drawing.Size(379, 417);
-            this.grdFtpFiles.TabIndex = 1;
-            this.grdFtpFiles.DoubleClick += new System.EventHandler(this.grdFtpFiles_DoubleClick);
-            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.btnRefreshFtpPath);
@@ -368,60 +318,6 @@
             this.trvLocalFolders.TabIndex = 0;
             this.trvLocalFolders.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trvLocalFolders_AfterSelect);
             // 
-            // grdLocalFiles
-            // 
-            this.grdLocalFiles.AllowUserToAddRows = false;
-            this.grdLocalFiles.AllowUserToDeleteRows = false;
-            this.grdLocalFiles.AllowUserToOrderColumns = true;
-            this.grdLocalFiles.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.grdLocalFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.grdLocalFiles.AutoSelectFirstRowOnDataSourceChange = false;
-            this.grdLocalFiles.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.grdLocalFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.grdLocalFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grdLocalFiles.CustomColumnAlignments = "";
-            this.grdLocalFiles.CustomColumnFormats = "";
-            this.grdLocalFiles.CustomColumnNames = "";
-            this.grdLocalFiles.CustomColumnSizes = "24";
-            this.grdLocalFiles.CustomColumnSums = "";
-            this.grdLocalFiles.CustomColumnWrapModes = "";
-            this.grdLocalFiles.CustomFooterRowBackgroundColor = System.Drawing.Color.White;
-            this.grdLocalFiles.CustomFooterRowForeColor = System.Drawing.Color.Black;
-            this.grdLocalFiles.CustomRowAlternativeBackgroundColor = System.Drawing.Color.WhiteSmoke;
-            this.grdLocalFiles.CustomRowAlternativeForeColor = System.Drawing.Color.Black;
-            this.grdLocalFiles.CustomRowBackgroundColor = System.Drawing.Color.White;
-            this.grdLocalFiles.CustomRowForeColor = System.Drawing.Color.Black;
-            this.grdLocalFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
-            this.grdLocalFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.grdLocalFiles.DefaultCellStyle = dataGridViewCellStyle4;
-            this.grdLocalFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdLocalFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.grdLocalFiles.GridColor = System.Drawing.Color.Gainsboro;
-            this.grdLocalFiles.KeyColumnIndex = -1;
-            this.grdLocalFiles.LastClickedColumnIndex = -1;
-            this.grdLocalFiles.LastClickedRowIndex = -1;
-            this.grdLocalFiles.Location = new System.Drawing.Point(0, 0);
-            this.grdLocalFiles.MultiSelect = false;
-            this.grdLocalFiles.Name = "grdLocalFiles";
-            this.grdLocalFiles.ReadOnly = true;
-            this.grdLocalFiles.RowHeadersVisible = false;
-            this.grdLocalFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdLocalFiles.ShowFooterRow = false;
-            this.grdLocalFiles.Size = new System.Drawing.Size(395, 377);
-            this.grdLocalFiles.TabIndex = 0;
-            this.grdLocalFiles.DoubleClick += new System.EventHandler(this.grdLocalFiles_DoubleClick);
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.btnRefreshLocalPath);
@@ -477,6 +373,10 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnLocalPathRename);
+            this.panel2.Controls.Add(this.btnLocalPathDelete);
+            this.panel2.Controls.Add(this.btnLocalPathCreate);
+            this.panel2.Controls.Add(this.btnLocalPathOpen);
             this.panel2.Controls.Add(this.txtLocalPath);
             this.panel2.Controls.Add(this.lblLocalPath);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -493,7 +393,7 @@
             this.txtLocalPath.Location = new System.Drawing.Point(49, 6);
             this.txtLocalPath.Name = "txtLocalPath";
             this.txtLocalPath.ReadOnly = true;
-            this.txtLocalPath.Size = new System.Drawing.Size(604, 23);
+            this.txtLocalPath.Size = new System.Drawing.Size(460, 23);
             this.txtLocalPath.TabIndex = 1;
             // 
             // lblLocalPath
@@ -581,21 +481,6 @@
             this.btnSaveFtpConnection.Text = "Save";
             this.btnSaveFtpConnection.UseVisualStyleBackColor = true;
             this.btnSaveFtpConnection.Click += new System.EventHandler(this.btnSaveFtpConnection_Click);
-            // 
-            // cmbFtpConnections
-            // 
-            this.cmbFtpConnections.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbFtpConnections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFtpConnections.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.cmbFtpConnections.FormattingEnabled = true;
-            this.cmbFtpConnections.KeyMember = "";
-            this.cmbFtpConnections.Location = new System.Drawing.Point(924, 20);
-            this.cmbFtpConnections.Name = "cmbFtpConnections";
-            this.cmbFtpConnections.SelectedKey = null;
-            this.cmbFtpConnections.Size = new System.Drawing.Size(172, 23);
-            this.cmbFtpConnections.TabIndex = 7;
-            this.cmbFtpConnections.SelectedIndexChanged += new System.EventHandler(this.cmbFtpConnections_SelectedIndexChanged);
             // 
             // tlpMain
             // 
@@ -715,6 +600,173 @@
             this.txtAria.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtAria_DragDrop);
             this.txtAria.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtAria_DragEnter);
             // 
+            // btnLocalPathOpen
+            // 
+            this.btnLocalPathOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocalPathOpen.Location = new System.Drawing.Point(515, 4);
+            this.btnLocalPathOpen.Name = "btnLocalPathOpen";
+            this.btnLocalPathOpen.Size = new System.Drawing.Size(30, 30);
+            this.btnLocalPathOpen.TabIndex = 6;
+            this.btnLocalPathOpen.Text = "O";
+            this.btnLocalPathOpen.UseVisualStyleBackColor = true;
+            this.btnLocalPathOpen.Click += new System.EventHandler(this.btnLocalPathOpen_Click);
+            // 
+            // cmbFtpConnections
+            // 
+            this.cmbFtpConnections.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbFtpConnections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFtpConnections.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.cmbFtpConnections.FormattingEnabled = true;
+            this.cmbFtpConnections.KeyMember = "";
+            this.cmbFtpConnections.Location = new System.Drawing.Point(924, 20);
+            this.cmbFtpConnections.Name = "cmbFtpConnections";
+            this.cmbFtpConnections.SelectedKey = null;
+            this.cmbFtpConnections.Size = new System.Drawing.Size(172, 23);
+            this.cmbFtpConnections.TabIndex = 7;
+            this.cmbFtpConnections.SelectedIndexChanged += new System.EventHandler(this.cmbFtpConnections_SelectedIndexChanged);
+            // 
+            // grdFtpFiles
+            // 
+            this.grdFtpFiles.AllowUserToAddRows = false;
+            this.grdFtpFiles.AllowUserToDeleteRows = false;
+            this.grdFtpFiles.AllowUserToOrderColumns = true;
+            this.grdFtpFiles.AllowUserToResizeRows = false;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.grdFtpFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            this.grdFtpFiles.AutoSelectFirstRowOnDataSourceChange = false;
+            this.grdFtpFiles.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.grdFtpFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.grdFtpFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdFtpFiles.CustomColumnAlignments = "";
+            this.grdFtpFiles.CustomColumnFormats = "";
+            this.grdFtpFiles.CustomColumnNames = "";
+            this.grdFtpFiles.CustomColumnSizes = "24";
+            this.grdFtpFiles.CustomColumnSums = "";
+            this.grdFtpFiles.CustomColumnWrapModes = "";
+            this.grdFtpFiles.CustomFooterRowBackgroundColor = System.Drawing.Color.White;
+            this.grdFtpFiles.CustomFooterRowForeColor = System.Drawing.Color.Black;
+            this.grdFtpFiles.CustomRowAlternativeBackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.grdFtpFiles.CustomRowAlternativeForeColor = System.Drawing.Color.Black;
+            this.grdFtpFiles.CustomRowBackgroundColor = System.Drawing.Color.White;
+            this.grdFtpFiles.CustomRowForeColor = System.Drawing.Color.Black;
+            this.grdFtpFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
+            this.grdFtpFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.grdFtpFiles.DefaultCellStyle = dataGridViewCellStyle6;
+            this.grdFtpFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdFtpFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.grdFtpFiles.GridColor = System.Drawing.Color.Gainsboro;
+            this.grdFtpFiles.KeyColumnIndex = -1;
+            this.grdFtpFiles.LastClickedColumnIndex = -1;
+            this.grdFtpFiles.LastClickedRowIndex = -1;
+            this.grdFtpFiles.Location = new System.Drawing.Point(0, 0);
+            this.grdFtpFiles.MultiSelect = false;
+            this.grdFtpFiles.Name = "grdFtpFiles";
+            this.grdFtpFiles.ReadOnly = true;
+            this.grdFtpFiles.RowHeadersVisible = false;
+            this.grdFtpFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdFtpFiles.ShowFooterRow = false;
+            this.grdFtpFiles.Size = new System.Drawing.Size(379, 417);
+            this.grdFtpFiles.TabIndex = 1;
+            this.grdFtpFiles.DoubleClick += new System.EventHandler(this.grdFtpFiles_DoubleClick);
+            // 
+            // grdLocalFiles
+            // 
+            this.grdLocalFiles.AllowUserToAddRows = false;
+            this.grdLocalFiles.AllowUserToDeleteRows = false;
+            this.grdLocalFiles.AllowUserToOrderColumns = true;
+            this.grdLocalFiles.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.grdLocalFiles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.grdLocalFiles.AutoSelectFirstRowOnDataSourceChange = false;
+            this.grdLocalFiles.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.grdLocalFiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.grdLocalFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdLocalFiles.CustomColumnAlignments = "";
+            this.grdLocalFiles.CustomColumnFormats = "";
+            this.grdLocalFiles.CustomColumnNames = "";
+            this.grdLocalFiles.CustomColumnSizes = "24";
+            this.grdLocalFiles.CustomColumnSums = "";
+            this.grdLocalFiles.CustomColumnWrapModes = "";
+            this.grdLocalFiles.CustomFooterRowBackgroundColor = System.Drawing.Color.White;
+            this.grdLocalFiles.CustomFooterRowForeColor = System.Drawing.Color.Black;
+            this.grdLocalFiles.CustomRowAlternativeBackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.grdLocalFiles.CustomRowAlternativeForeColor = System.Drawing.Color.Black;
+            this.grdLocalFiles.CustomRowBackgroundColor = System.Drawing.Color.White;
+            this.grdLocalFiles.CustomRowForeColor = System.Drawing.Color.Black;
+            this.grdLocalFiles.CustomRowSelectionBackgroundColor = System.Drawing.SystemColors.Highlight;
+            this.grdLocalFiles.CustomRowSelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.grdLocalFiles.DefaultCellStyle = dataGridViewCellStyle2;
+            this.grdLocalFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdLocalFiles.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.grdLocalFiles.GridColor = System.Drawing.Color.Gainsboro;
+            this.grdLocalFiles.KeyColumnIndex = -1;
+            this.grdLocalFiles.LastClickedColumnIndex = -1;
+            this.grdLocalFiles.LastClickedRowIndex = -1;
+            this.grdLocalFiles.Location = new System.Drawing.Point(0, 0);
+            this.grdLocalFiles.MultiSelect = false;
+            this.grdLocalFiles.Name = "grdLocalFiles";
+            this.grdLocalFiles.ReadOnly = true;
+            this.grdLocalFiles.RowHeadersVisible = false;
+            this.grdLocalFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdLocalFiles.ShowFooterRow = false;
+            this.grdLocalFiles.Size = new System.Drawing.Size(395, 377);
+            this.grdLocalFiles.TabIndex = 0;
+            this.grdLocalFiles.DoubleClick += new System.EventHandler(this.grdLocalFiles_DoubleClick);
+            // 
+            // btnLocalPathCreate
+            // 
+            this.btnLocalPathCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocalPathCreate.Location = new System.Drawing.Point(551, 4);
+            this.btnLocalPathCreate.Name = "btnLocalPathCreate";
+            this.btnLocalPathCreate.Size = new System.Drawing.Size(30, 30);
+            this.btnLocalPathCreate.TabIndex = 7;
+            this.btnLocalPathCreate.Text = "+";
+            this.btnLocalPathCreate.UseVisualStyleBackColor = true;
+            this.btnLocalPathCreate.Click += new System.EventHandler(this.btnLocalPathCreate_Click);
+            // 
+            // btnLocalPathDelete
+            // 
+            this.btnLocalPathDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocalPathDelete.Location = new System.Drawing.Point(587, 4);
+            this.btnLocalPathDelete.Name = "btnLocalPathDelete";
+            this.btnLocalPathDelete.Size = new System.Drawing.Size(30, 30);
+            this.btnLocalPathDelete.TabIndex = 8;
+            this.btnLocalPathDelete.Text = "-";
+            this.btnLocalPathDelete.UseVisualStyleBackColor = true;
+            this.btnLocalPathDelete.Click += new System.EventHandler(this.btnLocalPathDelete_Click);
+            // 
+            // btnLocalPathRename
+            // 
+            this.btnLocalPathRename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocalPathRename.Location = new System.Drawing.Point(623, 4);
+            this.btnLocalPathRename.Name = "btnLocalPathRename";
+            this.btnLocalPathRename.Size = new System.Drawing.Size(30, 30);
+            this.btnLocalPathRename.TabIndex = 9;
+            this.btnLocalPathRename.Text = "/";
+            this.btnLocalPathRename.UseVisualStyleBackColor = true;
+            this.btnLocalPathRename.Click += new System.EventHandler(this.btnLocalPathRename_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -731,7 +783,6 @@
             this.spltFtp.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.spltFtp)).EndInit();
             this.spltFtp.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.grdFtpFiles)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.grpLocalFiles.ResumeLayout(false);
@@ -740,7 +791,6 @@
             this.spltLocal.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.spltLocal)).EndInit();
             this.spltLocal.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.grdLocalFiles)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -756,6 +806,8 @@
             this.spltFiles.ResumeLayout(false);
             this.grpActions.ResumeLayout(false);
             this.grpActions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdFtpFiles)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdLocalFiles)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -807,6 +859,10 @@
         private System.Windows.Forms.Button btnJobs;
         private System.Windows.Forms.Button btnDeleteFtpConnection;
         private System.Windows.Forms.Button btnDeleteRemoteFile;
+        private System.Windows.Forms.Button btnLocalPathOpen;
+        private System.Windows.Forms.Button btnLocalPathCreate;
+        private System.Windows.Forms.Button btnLocalPathDelete;
+        private System.Windows.Forms.Button btnLocalPathRename;
     }
 }
 

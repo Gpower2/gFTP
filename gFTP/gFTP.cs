@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -54,7 +52,7 @@ namespace gFtp
             _logger = logger ?? NullLogger.Instance;
         }
 
-        private FtpWebRequest GetFtpWebRequest(String argDirectory)
+        private FtpWebRequest GetFtpWebRequest(string argDirectory)
         {
             argDirectory = argDirectory.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argDirectory));
@@ -69,13 +67,7 @@ namespace gFtp
 
         public async Task DeleteRemoteFileAsync(string argFile)
         {
-            argFile = argFile.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFile));
-            NetworkCredential credentials = new NetworkCredential(FtpUsername, FtpPassword);
-            request.Credentials = credentials;
-            request.UsePassive = true;
-            request.UseBinary = true;
-            request.KeepAlive = false;
+            FtpWebRequest request = GetFtpWebRequest(argFile);
 
             request.Method = WebRequestMethods.Ftp.DeleteFile;
 
@@ -95,13 +87,7 @@ namespace gFtp
 
         public async Task DeleteRemoteFolderAsync(string argFolder)
         {
-            argFolder = argFolder.Replace(FtpDomain, "").Replace("#", "%23").Replace("?", "%3f");
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UrlHelper.Combine(FtpDomain, argFolder));
-            NetworkCredential credentials = new NetworkCredential(FtpUsername, FtpPassword);
-            request.Credentials = credentials;
-            request.UsePassive = true;
-            request.UseBinary = true;
-            request.KeepAlive = false;
+            FtpWebRequest request = GetFtpWebRequest(argFolder);
 
             request.Method = WebRequestMethods.Ftp.RemoveDirectory;
 
