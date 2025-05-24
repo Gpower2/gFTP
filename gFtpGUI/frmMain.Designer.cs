@@ -245,7 +245,7 @@
             // 
             // txtFtpPath
             // 
-            this.txtFtpPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtFtpPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFtpPath.BackColor = System.Drawing.SystemColors.Window;
             this.txtFtpPath.Location = new System.Drawing.Point(39, 6);
@@ -343,7 +343,7 @@
             // 
             // txtLocalDriveInfo
             // 
-            this.txtLocalDriveInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtLocalDriveInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLocalDriveInfo.BackColor = System.Drawing.SystemColors.Window;
             this.txtLocalDriveInfo.Location = new System.Drawing.Point(138, 6);
@@ -387,7 +387,7 @@
             // 
             // txtLocalPath
             // 
-            this.txtLocalPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtLocalPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLocalPath.BackColor = System.Drawing.SystemColors.Window;
             this.txtLocalPath.Location = new System.Drawing.Point(49, 6);
@@ -520,6 +520,9 @@
             // 
             // grpActions
             // 
+            // Instantiation must happen before adding to Controls collection or setting properties
+            this.chkDarkMode = new System.Windows.Forms.CheckBox();
+            this.grpActions.Controls.Add(this.chkDarkMode);
             this.grpActions.Controls.Add(this.btnDeleteRemoteFile);
             this.grpActions.Controls.Add(this.btnJobs);
             this.grpActions.Controls.Add(this.btnSaveAriaPath);
@@ -580,7 +583,7 @@
             // lblAria
             // 
             this.lblAria.AutoSize = true;
-            this.lblAria.Location = new System.Drawing.Point(294, 26);
+            this.lblAria.Location = new System.Drawing.Point(389, 26);
             this.lblAria.Name = "lblAria";
             this.lblAria.Size = new System.Drawing.Size(61, 15);
             this.lblAria.TabIndex = 16;
@@ -589,16 +592,27 @@
             // txtAria
             // 
             this.txtAria.AllowDrop = true;
-            this.txtAria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAria.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAria.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAria.Location = new System.Drawing.Point(360, 22);
+            this.txtAria.Location = new System.Drawing.Point(455, 22);
             this.txtAria.Name = "txtAria";
             this.txtAria.ReadOnly = true;
-            this.txtAria.Size = new System.Drawing.Size(716, 23);
+            this.txtAria.Size = new System.Drawing.Size(621, 23);
             this.txtAria.TabIndex = 15;
             this.txtAria.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtAria_DragDrop);
             this.txtAria.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtAria_DragEnter);
+            // 
+            // chkDarkMode
+            // 
+            // this.chkDarkMode = new System.Windows.Forms.CheckBox(); // Moved up
+            this.chkDarkMode.AutoSize = true;
+            this.chkDarkMode.Location = new System.Drawing.Point(298, 23);
+            this.chkDarkMode.Name = "chkDarkMode";
+            this.chkDarkMode.Size = new System.Drawing.Size(85, 19);
+            this.chkDarkMode.TabIndex = 21;
+            this.chkDarkMode.Text = "Dark Mode";
+            this.chkDarkMode.UseVisualStyleBackColor = true;
             // 
             // btnLocalPathOpen
             // 
@@ -613,7 +627,7 @@
             // 
             // cmbFtpConnections
             // 
-            this.cmbFtpConnections.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbFtpConnections.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFtpConnections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFtpConnections.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
@@ -863,6 +877,7 @@
         private System.Windows.Forms.Button btnLocalPathCreate;
         private System.Windows.Forms.Button btnLocalPathDelete;
         private System.Windows.Forms.Button btnLocalPathRename;
+        private System.Windows.Forms.CheckBox chkDarkMode;
     }
 }
 
