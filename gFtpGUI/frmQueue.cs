@@ -421,7 +421,7 @@ namespace gFtpGUI
                 {
                     (grdQueue.DataSource as IList<QueueItem>).Remove(item as QueueItem);
                 }
-
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
                 grdQueue.Refresh();
                 await SaveQueueAsync();
             }
@@ -512,6 +512,7 @@ namespace gFtpGUI
                         item.EndTime = null;
                     }
                 }
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
                 grdQueue.Refresh();
                 await SaveQueueAsync();
             }
@@ -545,6 +546,8 @@ namespace gFtpGUI
                 {
                     items.Remove((grdQueue.DataSource as IList<QueueItem>).FirstOrDefault(q => q.State == JobState.Completed));
                 }
+
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
                 grdQueue.Refresh();
                 await SaveQueueAsync();
             }
@@ -626,6 +629,7 @@ namespace gFtpGUI
                 grdQueue.FirstDisplayedScrollingRowIndex = rowIndex;
 
                 grdQueue.ResumeDrawing();
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
 
                 grdQueue.Refresh();
                 await SaveQueueAsync();
@@ -683,6 +687,7 @@ namespace gFtpGUI
                 grdQueue.FirstDisplayedScrollingRowIndex = rowIndex;
 
                 grdQueue.ResumeDrawing();
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
 
                 grdQueue.Refresh();
                 await SaveQueueAsync();
@@ -765,6 +770,7 @@ namespace gFtpGUI
                 }
 
                 this.Cursor = Cursors.WaitCursor;
+                grdQueue.SuspendDrawing();
 
                 long totalFilesRemoved = 0;
                 while (queue.Any(q => q.State == JobState.Completed))
@@ -790,7 +796,11 @@ namespace gFtpGUI
                     }
                 }
 
+                grdQueue.ResumeDrawing();
+
+                ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
                 grdQueue.Refresh();
+
                 await SaveQueueAsync();
                 this.Cursor = Cursors.Default;
                 MessageBox.Show($"{totalFilesRemoved} deleted file(s) were removed!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);

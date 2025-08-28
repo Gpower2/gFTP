@@ -758,7 +758,8 @@ namespace gFtpGUI
                 // Read the contents and add them to the ListView
                 // First clear the list view contents
                 grdFtpFiles.DataSource = null;
-                ApplyThemeToControl(grdFtpFiles, chkDarkMode.Checked); grdFtpFiles.Refresh();
+                ApplyThemeToControl(grdFtpFiles, chkDarkMode.Checked); 
+                grdFtpFiles.Refresh();
 
                 List<FileItem> items = new List<FileItem>();
 
@@ -1004,6 +1005,7 @@ namespace gFtpGUI
                         {
                             grdLocalFiles.Sort(newSortColumn, ListSortDirection.Descending);
                         }
+                        ApplyThemeToDataGridView(grdLocalFiles, chkDarkMode.Checked);
                     }
                 }
 
@@ -1692,6 +1694,7 @@ namespace gFtpGUI
                         {
                             grdFtpFiles.Sort(newSortColumn, ListSortDirection.Descending);
                         }
+                        ApplyThemeToDataGridView(grdFtpFiles, chkDarkMode.Checked);
                     }
                 }
 
