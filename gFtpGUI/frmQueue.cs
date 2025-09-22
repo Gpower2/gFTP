@@ -204,6 +204,7 @@ namespace gFtpGUI
 
             queue.Add(q);
             grdQueue.ClearSelection();
+            ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled); // Explicit call after DataSource set
             grdQueue.Refresh();
 
             await SaveQueueAsync();
