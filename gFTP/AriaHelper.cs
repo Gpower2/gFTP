@@ -23,12 +23,20 @@ namespace gFtp
             argBuilder.AppendFormat(" --out=\"{0}\"", argDestFilename.Replace("?", ""));
             argBuilder.AppendFormat(" --file-allocation=none");
             argBuilder.AppendFormat(" --download-result=full");
-            argBuilder.AppendFormat(" --max-connection-per-server=10");
-            argBuilder.AppendFormat(" --min-split-size=10M");
-            argBuilder.AppendFormat(" --split=8");
+            argBuilder.AppendFormat(" --max-connection-per-server=15");
+            argBuilder.AppendFormat(" --min-split-size=5M");
+            argBuilder.AppendFormat(" --split=15");
             argBuilder.AppendFormat(" --ftp-user={0}", argFtp.FtpUsername);
             argBuilder.AppendFormat(" --ftp-passwd={0}", argFtp.FtpPassword);
-            argBuilder.AppendFormat(" \"{0}\"", UrlHelper.Combine(argFtp.FtpDomain, argFtpPath, argFtpFilename).Replace("%", "%25").Replace("#", "%23").Replace("?", "%3f"));
+            String url = UrlHelper.Combine(argFtp.FtpDomain, argFtpPath, argFtpFilename).Replace("%", "%25").Replace("#", "%23").Replace("?", "%3f");
+            bool isGdl = Path.GetFileNameWithoutExtension(argAriaPath).Equals("gdl", StringComparison.OrdinalIgnoreCase);
+            if (isGdl && url.StartsWith("sftp://", StringComparison.OrdinalIgnoreCase))
+            {
+                // gdl-specific: trust-on-first-use for unknown SFTP host keys,
+                // non-interactively (like FileZilla/WinSCP auto-accept)
+                argBuilder.Append(" --host-key=accept-new");
+            }
+            argBuilder.AppendFormat(" \"{0}\"", url);
 
             ProcessStartInfo myProcessInfo = new ProcessStartInfo
             {

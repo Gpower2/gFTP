@@ -21,7 +21,7 @@ namespace gFtp
             } 
             set
             {
-                if (!value.StartsWith("ftp://"))
+                if (!value.StartsWith("ftp://") && !value.StartsWith("sftp://"))
                 {
                     _FtpDomain = String.Format("ftp://{0}", value);
                 }
@@ -42,7 +42,7 @@ namespace gFtp
         public gFTP(String argFtpServer, String argUser, String argPassword, ILogger logger = null)
         {
             FtpDomain = argFtpServer;
-            if (!FtpDomain.StartsWith("ftp://"))
+            if (!FtpDomain.StartsWith("ftp://") && !FtpDomain.StartsWith("sftp://"))
             {
                 FtpDomain = String.Format("ftp://{0}", FtpDomain);
             }
