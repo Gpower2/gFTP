@@ -35,6 +35,12 @@ namespace gFtp
         public String FtpUsername { get; set; } = "";
         public String FtpPassword { get; set; } = "";
 
+        /// <summary>True when the connection domain is sftp:// (browsing goes over SSH.NET, not FtpWebRequest).</summary>
+        public bool IsSftp
+        {
+            get { return FtpDomain.StartsWith("sftp://", StringComparison.OrdinalIgnoreCase); }
+        }
+
         private readonly ILogger _logger;
 
         public gFTP() { _logger = NullLogger.Instance; }
@@ -67,6 +73,18 @@ namespace gFtp
 
         public async Task DeleteRemoteFileAsync(string argFile)
         {
+            if (IsSftp)
+            {
+                await Task.Run(() =>
+                {
+                    using (var sftp = new SftpBrowser(FtpDomain, FtpUsername, FtpPassword))
+                    {
+                        sftp.DeleteFile(argFile.Replace(FtpDomain, ""));
+                    }
+                });
+                return;
+            }
+
             FtpWebRequest request = GetFtpWebRequest(argFile);
 
             request.Method = WebRequestMethods.Ftp.DeleteFile;
@@ -87,6 +105,18 @@ namespace gFtp
 
         public async Task DeleteRemoteFolderAsync(string argFolder)
         {
+            if (IsSftp)
+            {
+                await Task.Run(() =>
+                {
+                    using (var sftp = new SftpBrowser(FtpDomain, FtpUsername, FtpPassword))
+                    {
+                        sftp.DeleteFolder(argFolder.Replace(FtpDomain, ""));
+                    }
+                });
+                return;
+            }
+
             FtpWebRequest request = GetFtpWebRequest(argFolder);
 
             request.Method = WebRequestMethods.Ftp.RemoveDirectory;
@@ -107,6 +137,11 @@ namespace gFtp
 
         public async Task<FtpFolder> GetFtpFolderDetailsAsync(String argPath, Int32 argLevel)
         {
+            if (IsSftp)
+            {
+                return await GetSftpFolderDetailsAsync(argPath, argLevel);
+            }
+
             // Get the object used to communicate with the server.
             FtpWebRequest request = GetFtpWebRequest(argPath);
 
@@ -142,6 +177,31 @@ namespace gFtp
                 }
             }
             return f;
+        }
+
+        private async Task<FtpFolder> GetSftpFolderDetailsAsync(String argPath, Int32 argLevel)
+        {
+            FtpFolder folder = await Task.Run(() =>
+            {
+                using (var sftp = new SftpBrowser(FtpDomain, FtpUsername, FtpPassword))
+                {
+                    return sftp.ListFolder(argPath);
+                }
+            });
+
+            _logger.LogDebug($"SFTP directory {argPath} listed: {folder}");
+
+            // Read subfolders, if argLevel>0 (mirrors the FTP flow)
+            if (argLevel > 0 && folder.Name != "..." && folder.Name != ".." && folder.Name != ".")
+            {
+                for (int i = 0; i < folder.Folders.Count; i++)
+                {
+                    DateTime tmpDate = folder.Folders[i].Date;
+                    folder.Folders[i] = await GetSftpFolderDetailsAsync(folder.Folders[i].FullPath, argLevel - 1);
+                    folder.Folders[i].Date = tmpDate;
+                }
+            }
+            return folder;
         }
 
         private FtpFolder ParseFtpFolderResponse(String argPath, String argContents)

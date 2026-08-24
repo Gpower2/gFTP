@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gControls", "gControls\gCon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gSettings", "gSettings\gSettings.csproj", "{EA81A32F-CD31-4D9A-961E-78C787A99E8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gFtp.SmokeTest", "gFtp.SmokeTest\gFtp.SmokeTest.csproj", "{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{EA81A32F-CD31-4D9A-961E-78C787A99E8D}.Release|x64.Build.0 = Release|x64
 		{EA81A32F-CD31-4D9A-961E-78C787A99E8D}.Release|x86.ActiveCfg = Release|x86
 		{EA81A32F-CD31-4D9A-961E-78C787A99E8D}.Release|x86.Build.0 = Release|x86
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|x64.Build.0 = Release|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E87CE70-FA6C-4D7B-9271-D7DFC4203B28}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -233,70 +233,84 @@ namespace gFtpGUI
 
                 while ((grdQueue.DataSource as IList<QueueItem>).Any(t => t.State == JobState.Pending))
                 {
-                    QueueItem q = (grdQueue.DataSource as IList<QueueItem>).Where(t => t.State == JobState.Pending).OrderBy(t => t.Order).FirstOrDefault();
-                    Job j = q.Job;
-                    var fullLocalPath = Path.Combine(j.LocalPath, j.LocalFilename);
-                    if (fullLocalPath.Length > 250)
+                    QueueItem q = (grdQueue.DataSource as IList<QueueItem>)
+                        .Where(t => t.State == JobState.Pending)
+                        .OrderBy(t => t.Order)
+                        .FirstOrDefault();
+                    try
                     {
-                        var charactersToRemove = fullLocalPath.Length - 250;
-
-                        var filenameWithoutExtension = Path.GetFileNameWithoutExtension(j.LocalFilename);
-
-                        filenameWithoutExtension = filenameWithoutExtension.Remove(filenameWithoutExtension.Length - charactersToRemove - 1, charactersToRemove);
-
-                        j.LocalFilename = $"{filenameWithoutExtension}{Path.GetExtension(j.LocalFilename)}";
-                    }
-
-                    gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Indeterminate);
-                    prgBrStatus.Style = ProgressBarStyle.Marquee;
-
-                    exitCode = 0;
-
-                    await Task.Run(() =>
-                    {
-                        using (Process myProcess = AriaHelper.GetAriaProcess(j.AriaPath, j.FtpPath, j.FtpFilename, j.LocalPath, j.LocalFilename, j.Ftp))
+                        Job j = q.Job;
+                        var fullLocalPath = Path.Combine(j.LocalPath, j.LocalFilename);
+                        if (fullLocalPath.Length > 250)
                         {
-                            q.State = JobState.Running;
-                            q.StartTime = DateTime.Now;
+                            var charactersToRemove = fullLocalPath.Length - 250;
 
-                            myProcess.Start();
+                            var filenameWithoutExtension = Path.GetFileNameWithoutExtension(j.LocalFilename);
 
-                            // Read the Standard output character by character
-                            AriaHelper.ReadStreamPerCharacter(myProcess);
+                            filenameWithoutExtension = filenameWithoutExtension.Remove(filenameWithoutExtension.Length - charactersToRemove - 1, charactersToRemove);
 
-                            while (myProcess != null && !myProcess.HasExited)
+                            j.LocalFilename = $"{filenameWithoutExtension}{Path.GetExtension(j.LocalFilename)}";
+                        }
+
+                        gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Indeterminate);
+                        prgBrStatus.Style = ProgressBarStyle.Marquee;
+
+                        exitCode = 0;
+
+                        await Task.Run(() =>
+                        {
+                            using (Process myProcess = AriaHelper.GetAriaProcess(j.AriaPath, j.FtpPath, j.FtpFilename, j.LocalPath, j.LocalFilename, j.Ftp))
                             {
-                                Application.DoEvents();
-                            }
-                            if (myProcess != null)
-                            {
-                                exitCode = myProcess.ExitCode;
-                            }
-                            else
-                            {
-                                exitCode = -1;
+                                q.State = JobState.Running;
+                                q.StartTime = DateTime.Now;
+
+                                myProcess.Start();
+
+                                // Read the Standard output character by character
+                                AriaHelper.ReadStreamPerCharacter(myProcess);
+
+                                while (myProcess != null && !myProcess.HasExited)
+                                {
+                                    Application.DoEvents();
+                                }
+                                if (myProcess != null)
+                                {
+                                    exitCode = myProcess.ExitCode;
+                                }
+                                else
+                                {
+                                    exitCode = -1;
+                                }
                             }
                         }
+                        );
+
+                        //while (!task.IsCompleted)
+                        //{
+                        //    if ((DateTime.Now - previousTime).TotalMilliseconds > 50)
+                        //    {
+                        //        grdQueue.Refresh();
+                        //        previousTime = DateTime.Now;
+                        //    }
+                        //    Application.DoEvents();
+                        //}
+
+                        q.EndTime = DateTime.Now;
+                        q.State = (exitCode == 0) ? JobState.Completed : JobState.Failed;
                     }
-                    );
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        q.State = JobState.Failed;
+                    }
+                    finally
+                    {
+                        ClearProgress();
+                        grdQueue.Refresh();
 
-                    //while (!task.IsCompleted)
-                    //{
-                    //    if ((DateTime.Now - previousTime).TotalMilliseconds > 50)
-                    //    {
-                    //        grdQueue.Refresh();
-                    //        previousTime = DateTime.Now;
-                    //    }
-                    //    Application.DoEvents();
-                    //}
-
-                    q.EndTime = DateTime.Now;
-                    q.State = (exitCode == 0) ? JobState.Completed : JobState.Failed;
-                    ClearProgress();
-                    grdQueue.Refresh();
-
-                    await SaveQueueAsync();
-                    Application.DoEvents();
+                        await SaveQueueAsync();
+                        Application.DoEvents();
+                    }
                 }
 
                 AriaHelper.AriaProgressUpdated -= AriaHelper_AriaProgressUpdated;
@@ -507,6 +521,12 @@ namespace gFtpGUI
                         item.EndTime = null;
                     }
                     else if (item.State == JobState.Waiting)
+                    {
+                        item.State = JobState.Pending;
+                        item.StartTime = null;
+                        item.EndTime = null;
+                    }
+                    else if (item.State == JobState.Running)
                     {
                         item.State = JobState.Pending;
                         item.StartTime = null;
