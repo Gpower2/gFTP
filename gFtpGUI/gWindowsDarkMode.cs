@@ -29,6 +29,27 @@ namespace gFtpGUI
             return false;
         }
 
+        /// <summary>
+        /// Apply the complete native theme (including scrollbars) to a control.
+        /// This should be called for every control that needs dark mode support.
+        /// </summary>
+        public static void ApplyNativeTheme(Control control, bool darkMode)
+        {
+            if (control == null || control.IsDisposed)
+            {
+                return;
+            }
+
+            // Skip ToolStripDropDown as it can corrupt native menu state
+            if (control is ToolStripDropDown)
+            {
+                return;
+            }
+
+            NativeMethods.SetWindowThemeManaged(control.Handle, darkMode);
+            NativeMethods.TrySetImmersiveDarkMode(control.Handle, darkMode);
+        }
+
         private static bool IsWindows10OrGreater(int build = -1)
         {
             if (Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment.OperatingSystemPlatform != Microsoft.DotNet.PlatformAbstractions.Platform.Windows)
@@ -50,3 +71,4 @@ namespace gFtpGUI
         }
     }
 }
+

@@ -167,6 +167,9 @@ namespace gFtpGUI
             }
             grdQueue.ClearSelection();
             grdQueue.ResumeLayout();
+            
+            // Re-apply theme after adding jobs to ensure the grid doesn't lose its dark mode styling
+            ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled);
             grdQueue.Refresh();
 
             await SaveQueueAsync();
@@ -839,117 +842,8 @@ namespace gFtpGUI
         // Copied from frmMain.cs and adapted for frmQueue
         private void ApplyThemeToDataGridView(gpower2.gControls.gDataGridView gdv, bool darkModeEnabled)
         {
-            if (darkModeEnabled)
-            {
-                gdv.EnableHeadersVisualStyles = false;
-                gdv.BackgroundColor = DarkModeBackColor;
-                gdv.GridColor = Color.FromArgb(100, 100, 100);
-
-                gdv.DefaultCellStyle.BackColor = DarkModeTextBoxBack;
-                gdv.DefaultCellStyle.ForeColor = DarkModeForeColor;
-                gdv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(70, 70, 130);
-                gdv.DefaultCellStyle.SelectionForeColor = Color.White;
-
-                gdv.AlternatingRowsDefaultCellStyle.BackColor = DarkModeBackColor;
-                gdv.AlternatingRowsDefaultCellStyle.ForeColor = DarkModeForeColor;
-                gdv.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(80, 80, 150);
-                gdv.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.White;
-
-                gdv.ColumnHeadersDefaultCellStyle.BackColor = DarkModeButtonBack;
-                gdv.ColumnHeadersDefaultCellStyle.ForeColor = DarkModeForeColor;
-                gdv.ColumnHeadersDefaultCellStyle.SelectionBackColor = DarkModeButtonBack;
-
-                gdv.RowHeadersDefaultCellStyle.BackColor = DarkModeBackColor;
-                gdv.RowHeadersDefaultCellStyle.ForeColor = DarkModeForeColor;
-                gdv.RowHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(80, 80, 150);
-
-                if (gdv.ContextMenuStrip != null)
-                {
-                    gdv.ContextMenuStrip.BackColor = DarkModeButtonBack;
-                    gdv.ContextMenuStrip.ForeColor = DarkModeForeColor;
-                    foreach (ToolStripItem item in gdv.ContextMenuStrip.Items)
-                    {
-                        item.BackColor = DarkModeButtonBack;
-                        item.ForeColor = DarkModeForeColor;
-                        if (item is ToolStripMenuItem menuItem && menuItem.DropDown != null)
-                        {
-                            menuItem.DropDown.BackColor = DarkModeButtonBack;
-                            menuItem.DropDown.ForeColor = DarkModeForeColor;
-                            foreach (ToolStripItem dropDownItem in menuItem.DropDown.Items)
-                            {
-                                dropDownItem.BackColor = DarkModeButtonBack;
-                                dropDownItem.ForeColor = DarkModeForeColor;
-                            }
-                        }
-                    }
-                }
-            }
-            else // Light Mode
-            {
-                // General settings for light mode
-                gdv.EnableHeadersVisualStyles = true;
-                gdv.RowHeadersVisible = false; // As per grdQueue designer
-
-                // Properties from grdQueue in designer
-                gdv.BackgroundColor = System.Drawing.Color.White;
-                gdv.GridColor = System.Drawing.Color.Gainsboro;
-                gdv.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-
-                // AlternatingRowsDefaultCellStyle (from dataGridViewCellStyle1)
-                gdv.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.WhiteSmoke;
-                gdv.AlternatingRowsDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-                gdv.AlternatingRowsDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-                gdv.AlternatingRowsDefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-                // Font, Alignment, WrapMode not set in dataGridViewCellStyle1
-
-                // DefaultCellStyle (from dataGridViewCellStyle2)
-                gdv.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-                gdv.DefaultCellStyle.BackColor = System.Drawing.Color.White;
-                gdv.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                gdv.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-                gdv.DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-                gdv.DefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-                gdv.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-
-                // ColumnHeadersDefaultCellStyle (Standard light mode, consistent with frmMain)
-                gdv.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
-                gdv.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                gdv.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
-                gdv.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
-                gdv.ColumnHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-                // No specific Alignment or WrapMode typically set for column headers from designer
-
-                // RowHeadersDefaultCellStyle (Standard light mode, consistent with frmMain, though not visible)
-                gdv.RowHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
-                gdv.RowHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                gdv.RowHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
-                gdv.RowHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-                gdv.RowHeadersDefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-                // No specific Alignment or WrapMode typically set for row headers from designer
-
-                // ContextMenuStrip styling (Standard light mode)
-                if (gdv.ContextMenuStrip != null)
-                {
-                    gdv.ContextMenuStrip.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                    gdv.ContextMenuStrip.ForeColor = System.Drawing.SystemColors.ControlText;
-                    foreach (ToolStripItem item in gdv.ContextMenuStrip.Items)
-                    {
-                        item.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                        item.ForeColor = System.Drawing.SystemColors.ControlText;
-                        if (item is ToolStripMenuItem menuItem && menuItem.DropDown != null)
-                        {
-                            menuItem.DropDown.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                            menuItem.DropDown.ForeColor = System.Drawing.SystemColors.ControlText;
-                            foreach (ToolStripItem dropDownItem in menuItem.DropDown.Items)
-                            {
-                                dropDownItem.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                                dropDownItem.ForeColor = System.Drawing.SystemColors.ControlText;
-                            }
-                        }
-                    }
-                }
-            }
-            gdv.Refresh(); // Refresh the grid after applying styles
+            // Use centralized ThemeManager for consistent theming
+            ThemeManager.ApplyThemeToDataGridView(gdv, darkModeEnabled);
         }
 
         private void ApplyThemeToControl(Control c, bool darkModeEnabled)
@@ -1193,11 +1087,27 @@ namespace gFtpGUI
         {
             _isDarkModeEnabled = darkModeEnabled; // Update theme state field
             this.UseImmersiveDarkMode(darkModeEnabled);
-            this.BackColor = darkModeEnabled ? DarkModeBackColor : LightModeBackColor;
-            ApplyThemeToControlCollection(this.Controls, darkModeEnabled); // Recursive call for all controls
+            
+            // Use centralized ThemeManager for consistent theming
+            ThemeManager.ApplyTheme(this, darkModeEnabled);
 
-            //grdQueue.Refresh(); // ApplyThemeToDataGridView will call Refresh
-            if (grdQueue != null && grdQueue.IsHandleCreated) // Check if grid is ready
+            // Apply native theme to the form itself (for title bar, etc.)
+            if (this.Handle != IntPtr.Zero)
+            {
+                NativeMethods.SetWindowThemeManaged(this.Handle, darkModeEnabled);
+                NativeMethods.TrySetImmersiveDarkMode(this.Handle, darkModeEnabled);
+            }
+            else
+            {
+                this.Shown += (s, ev) =>
+                {
+                    NativeMethods.SetWindowThemeManaged(this.Handle, darkModeEnabled);
+                    NativeMethods.TrySetImmersiveDarkMode(this.Handle, darkModeEnabled);
+                };
+            }
+
+            // Ensure DataGridView is themed correctly
+            if (grdQueue != null && grdQueue.IsHandleCreated)
             {
                 ApplyThemeToDataGridView(grdQueue, _isDarkModeEnabled);
             }

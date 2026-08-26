@@ -1619,6 +1619,74 @@ namespace gpower2.gControls
             }
         }
 
+        /// <summary>
+        /// Override OnPaint to handle painting of the scrollbar corner in dark mode.
+        /// The scrollbar corner is the small square area where horizontal and vertical scrollbars meet.
+        /// </summary>
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            // Paint the scrollbar corner BEFORE calling base.OnPaint
+            // This ensures our painting is not overwritten by the default painting
+            if (DarkModeEnabled)
+            {
+                PaintScrollbarCorner(e.Graphics);
+            }
+
+            base.OnPaint(e);
+        }
+
+        /// <summary>
+        /// Gets or sets whether dark mode is enabled for this control.
+        /// </summary>
+        [Browsable(true)]
+        [Category("Custom Properties")]
+        [DefaultValue(false)]
+        public bool DarkModeEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Paints the scrollbar corner area with the appropriate theme color.
+        /// </summary>
+        private void PaintScrollbarCorner(Graphics g)
+        {
+            try
+            {
+                // Check if both scrollbars are visible
+                bool vScrollVisible = this.DisplayedRowCount(false) < this.RowCount;
+                bool hScrollVisible = this.DisplayedColumnCount(false) < this.ColumnCount;
+
+                if (!vScrollVisible || !hScrollVisible)
+                {
+                    return;
+                }
+
+                // Get the scrollbar dimensions
+                int vScrollWidth = SystemInformation.VerticalScrollBarWidth;
+                int hScrollHeight = SystemInformation.HorizontalScrollBarHeight;
+
+                // Calculate the corner rectangle
+                Rectangle cornerRect = new Rectangle(
+                    this.Width - vScrollWidth,
+                    this.Height - hScrollHeight,
+                    vScrollWidth,
+                    hScrollHeight);
+
+                // Only paint if the corner is within the client area
+                if (cornerRect.Width > 0 && cornerRect.Height > 0)
+                {
+                    // Use the grid's background color to paint the corner
+                    // This matches the textbox scrollbar corner appearance
+                    using (Brush brush = new SolidBrush(this.BackgroundColor))
+                    {
+                        g.FillRectangle(brush, cornerRect);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         public override void Sort(DataGridViewColumn dataGridViewColumn, ListSortDirection direction)
         {
             // Avoid running the OnSelectionEventChange while sorting
